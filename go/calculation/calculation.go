@@ -93,6 +93,7 @@ func checkSkillStat(feats []map[string]string, data RequestData) ([]string, erro
 			if len(statsFailed) > 0 {
 				for _, failed := range statsFailed {
 					if _, ok := feat[failed]; ok {
+						fmt.Println("SKILL/STAT = {FAILED}:", "({"+failed, "->", "at iteration}):", i, "||", "{Feat}:", "({"+feat["Feat"], "->", "needs}):", feat[failed], failed)
 						noFails = false
 					}
 				}
@@ -100,6 +101,7 @@ func checkSkillStat(feats []map[string]string, data RequestData) ([]string, erro
 			if noFails == true {
 				if len(skillsMet) > 0 {
 					StatSkillFeats = append(StatSkillFeats, feat["Feat"])
+					fmt.Println("SKILL/STAT = {MET}", feat["Feat"], "Appended at iteration:", "->", i, "noFails:", noFails)
 				}
 			}
 		}
@@ -157,6 +159,7 @@ func checkStat(feats []map[string]string, data RequestData) ([]string, error) {
 				// this is kind of unnecessary as this slice being populated alone is enough to make this fail, but hey, why not
 				for _, failed := range statsFailed {
 					if _, ok := feat[failed]; ok {
+						fmt.Println("STAT = {FAILED}:", "({"+failed, "->", "at iteration}):", i, "||", "{Feat}:", "({"+feat["Feat"], "->", "needs}):", feat[failed], failed)
 						noFails = false
 					}
 				}
@@ -164,6 +167,7 @@ func checkStat(feats []map[string]string, data RequestData) ([]string, error) {
 			if noFails == true {
 				if !hasSkillRequirement {
 					StatFeats = append(StatFeats, feat["Feat"])
+					fmt.Println("STAT = {MET}:", feat["Feat"], "Appended at iteration:", "->", i, "noFails:", noFails, "hasSkillRequirement:", hasSkillRequirement)
 				}
 			}
 		}
@@ -220,11 +224,12 @@ func checkSkill(feats []map[string]string, data RequestData) ([]string, error) {
 			}
 			if len(skillsFailed) > 0 {
 				for _, failed := range skillsFailed {
-					fmt.Println("failed: ", failed)
+					fmt.Println("SKILL = {FAILED}:", "({"+failed, "->", "at iteration}):", i, "||", "{Feat}:", "({"+feat["Feat"], "->", "needs}):", feat[failed], failed)
 				}
 			}
 			if !hasStatRequirement {
 				SkillFeats = append(SkillFeats, feat["Feat"])
+				fmt.Println("SKILL = {MET}", feat["Feat"], "Appended at iteration:", "->", i, "hasStatRequirement:", hasStatRequirement)
 			}
 		}
 

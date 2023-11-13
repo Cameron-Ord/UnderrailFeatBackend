@@ -97,6 +97,7 @@ func main() {
 		handlers.AllowedHeaders([]string{"Content-Type"}),
 	)
 	http.Handle("/", corsHandler(r))
-	fmt.Println("Server is running on :5000")
-	http.ListenAndServe(":5000", nil)
+	port := "6969"
+	fmt.Printf("Server is running on http://localhost:%s\n", port)
+	http.ListenAndServe(":"+port, nil)
 }

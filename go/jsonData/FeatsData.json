@@ -432,6 +432,7 @@
         "Feat": "Ripper",
         "Dexterity": "10",
         "Will": "5",
+        "Melee": "50",
         "Throwing": "50",
         "Type": "Knife"
     },
