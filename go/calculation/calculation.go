@@ -89,17 +89,16 @@ func checkSkillStat(feats []map[string]string, data RequestData) ([]string, erro
 					}
 				}
 			}
-
-			if len(statsFailed) > 0 {
-				for _, failed := range statsFailed {
-					if _, ok := feat[failed]; ok {
-						fmt.Println("SKILL/STAT = {FAILED}:", "({"+failed, "->", "at iteration}):", i, "||", "{Feat}:", "({"+feat["Feat"], "->", "needs}):", feat[failed], failed)
-						noFails = false
+			if len(skillsMet) > 0 {
+				if len(statsFailed) > 0 {
+					for _, failed := range statsFailed {
+						if _, ok := feat[failed]; ok {
+							fmt.Println("SKILL/STAT = {FAILED}:", "({"+failed, "->", "at iteration}):", i, "||", "{Feat}:", "({"+feat["Feat"], "->", "needs}):", feat[failed], failed)
+							noFails = false
+						}
 					}
 				}
-			}
-			if noFails == true {
-				if len(skillsMet) > 0 {
+				if noFails == true {
 					StatSkillFeats = append(StatSkillFeats, feat["Feat"])
 					fmt.Println("SKILL/STAT = {MET}", feat["Feat"], "Appended at iteration:", "->", i, "noFails:", noFails)
 				}
@@ -259,23 +258,52 @@ func marshalData(sentSlice []string) ([]byte, error) {
 }
 
 func PrepareData(data RequestData) ([]byte, error) {
+	fmt.Println(" ")
+	fmt.Println("----------------------")
+	fmt.Println("Starting calculation..")
+	fmt.Println("----------------------")
+	fmt.Println(" ")
+
 	var feats []map[string]string
 	feats = unloadJson()
+	fmt.Println(" ")
+	fmt.Println("----------------------")
+	fmt.Println("Checking skills...")
+	fmt.Println("----------------------")
+	fmt.Println(" ")
 	SkillFeats, err := checkSkill(feats, data)
 	if err != nil {
 		return nil, err
 	}
-
+	fmt.Println(" ")
+	fmt.Println("..Done")
+	fmt.Println(" ")
+	fmt.Println("----------------------")
+	fmt.Println("Checking stats...")
+	fmt.Println("----------------------")
+	fmt.Println(" ")
 	StatFeats, err := checkStat(feats, data)
 	if err != nil {
 		return nil, err
 	}
-
+	fmt.Println(" ")
+	fmt.Println("..Done")
+	fmt.Println(" ")
+	fmt.Println("----------------------")
+	fmt.Println("Checking skills and stats...")
+	fmt.Println("----------------------")
+	fmt.Println(" ")
 	StatSkillFeats, err := checkSkillStat(feats, data)
 	if err != nil {
 		return nil, err
 	}
-
+	fmt.Println(" ")
+	fmt.Println("..Done")
+	fmt.Println(" ")
+	fmt.Println("----------------------")
+	fmt.Println("Appending...")
+	fmt.Println("----------------------")
+	fmt.Println(" ")
 	var allAllocatedFeats []string
 	allAllocatedFeats = append(StatFeats, SkillFeats...)
 	allAllocatedFeats = append(allAllocatedFeats, StatSkillFeats...)
@@ -283,5 +311,12 @@ func PrepareData(data RequestData) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println(" ")
+	fmt.Println("..Done")
+	fmt.Println(" ")
+	fmt.Println("----------------------")
+	fmt.Println("Finished...")
+	fmt.Println("----------------------")
+	fmt.Println(" ")
 	return jsonData, nil
 }
