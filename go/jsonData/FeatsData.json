@@ -1,118 +1,154 @@
 [
     {
+        "NeedsAllSkills": "true",
+        "NeedsAllStats": "true",
         "Feat": "Blitz",
         "Level": "10",
         "Agility": "10"
     },
     {
+        "NeedsAllSkills": "true",
+        "NeedsAllStats": "true",
         "Feat": "Evasive Maneuvers",
         "Evasion": "50",
         "Agility": "6"
     },
     {
+        "NeedsAllSkills": "true",
+        "NeedsAllStats": "true",
         "Feat": "Expert Dodging",
         "Level": "26",
         "Agility": "12",
         "Dodge": "120"
     },
     {
+        "NeedsAllStats": "true",
         "Feat": "Expert Sprint",
         "Level": "26",
         "Agility": "13"
     },
     {
+        "NeedsAllSkills": "true",
+        "NeedsAllStats": "true",
         "Feat": "Fend",
         "Agility": "5",
         "Melee": "30",
         "Type": "Spear"
     },
     {
+        "NeedsAllStats": "true",
         "Feat": "Flight Response",
         "Level": "26",
         "Agility": "7"
     },
     {
+        "NeedsAllStats": "true",
         "Feat": "Hit and Run",
         "Agility": "7"
     },
     {
+        "NeedsAllStats": "true",
         "Feat": "Improved Naval Combat",
         "Agility": "7",
         "Type": "Jetski"
     },
     {
+        "NeedsAllSkills": "true",
+        "NeedsAllStats": "true",
         "Feat": "Interloper",
         "Agility": "7",
         "Stealth": "20",
         "Type": "Stealth"
     },
     {
+        "NeedsAllStats": "true",
         "Feat": "Sea Dog",
         "Level": "26",
         "Agility": "10",
         "Type": "Jetski"
     },
     {
+        "NeedsAllSkills": "true",
+        "NeedsAllStats": "true",
         "Feat": "Spec Ops",
         "Agility": "6",
         "Guns": "50",
         "Type": "SMG"
     },
     {
+        "NeedsAllStats": "true",
         "Feat": "Sprint",
         "Agility": "6"
     },
     {
+        "NeedsAllStats": "true",
         "Feat": "Strafe",
         "Dexterity": "5",
         "Agility": "5"
     },
     {
+        "NeedsAllStats": "true",
         "Feat": "Strider",
         "Level": "26",
         "Agility": "10"
     },
     {
+        "NeedsAllStats": "true",
         "Feat": "Stuntman",
         "Level": "26",
         "Agility": "12"
     },
     {
+        "NeedsAllStats": "true",
         "Feat": "Sure Step",
         "Agility": "5"
     },
     {
+        "NeedsAllSkills": "true",
+        "NeedsAllStats": "true",
         "Feat": "Sweep",
         "Agility": "6",
         "Melee": "55",
         "Type": "Spear"
     },
     {
+        "NeedsAllSkills": "true",
+        "NeedsAllStats": "true",
         "Feat": "Uncanny Dodge",
         "Dodge": "40",
         "Agility": "8"
     },
     {
+        "NeedsAllSkills": "true",
         "Feat": "Doctor (feat)",
         "Biology": "15"
     },
     {
+        "NeedsAllSkills": "true",
         "Feat": "Hypertoxicity",
         "Biology": "35",
         "Type": "Poison"
     },
     {
+        "NeedsAllSkills": "true",
+        "NeedsAllStats": "true",
         "Feat": "Neurology",
         "Intelligence": "7",
         "Biology": "35"
     },
     {
+        "NeedsAllSkills": "false",
+        "HardRequirement": "Biology",
         "Feat": "Vile Weaponry",
         "Biology": "10",
         "Traps": "25",
+        "Crossbows": "25",
+        "Melee": "25",
         "Type": "Poison"
     },
     {
+        "NeedsAllSkills": "true",
+        "NeedsAllStats": "true",
         "Feat": "Cooked Shot",
         "Dexterity": "5",
         "Guns": "35",
@@ -120,25 +156,39 @@
         "Type": "Chemical"
     },
     {
+        "NeedsAllSkills": "true",
+        "NeedsAllStats": "true",
         "Feat": "Mad Chemist",
         "Intelligence": "7",
         "Chemistry": "40",
         "Type": "Chemical"
     },
     {
+        "NeedsAllStats": "true",
         "Feat": "Bodybuilding",
         "Level": "26",
         "Constitution": "12"
     },
     {
+        "NeedsAllStats": "true",
         "Feat": "Conditioning",
         "Constitution": "5"
     },
     {
+        "NeedsAllStats": "true",
         "Feat": "Fast Metabolism",
         "Constitution": "6"
     },
     {
+        "NeedsAllSkills": "true",
+        "NeedsAllStats": "true",
+        "Feat": "Demolition Man",
+        "Constitution": "5",
+        "Guns": "100"
+    },
+    {
+        "NeedsAllSkills": "false",
+        "NeedsAllStats": "true",
         "Feat": "Hemopsychosis",
         "Will": "9",
         "Constitution": "7",
@@ -148,97 +198,124 @@
         "Psychokinesis": "75"
     },
     {
+        "NeedsAllStats": "true",
         "Feat": "Juggernaut",
         "Constitution": "7",
         "Strength": "7"
     },
     {
+        "NeedsAllStats": "true",
         "Feat": "Last Stand",
         "Constitution": "9",
         "Level": "5"
     },
     {
+        "NeedsAllStats": "true",
         "Feat": "Stoicism",
         "Constitution": "7",
         "Will": "7"
     },
     {
+        "NeedsAllStats": "true",
         "Feat": "Survival Instincts",
         "Constitution": "9"
     },
     {
+        "NeedsAllStats": "true",
         "Feat": "Tempered: Acid",
         "Level": "26",
         "Constitution": "12"
     },
     {
+        "NeedsAllStats": "true",
         "Feat": "Tempered: Cold",
         "Level": "26",
         "Constitution": "12"
     },
     {
+        "NeedsAllStats": "true",
         "Feat": "Tempered: Electricity",
         "Level": "26",
         "Constitution": "12"
     },
     {
+        "NeedsAllStats": "true",
         "Feat": "Tempered: Heat",
         "Level": "26",
         "Constitution": "12"
     },
     {
+        "NeedsAllStats": "true",
         "Feat": "Thick Skull",
         "Constitution": "10"
     },
     {
+        "NeedsAllSkills": "true",
+        "NeedsAllStats": "true",
         "Feat": "Armor Sloping",
         "Intelligence": "6",
         "Mechanics": "15",
         "Type": "Crafting"
     },
     {
+        "NeedsAllSkills": "true",
+        "NeedsAllStats": "true",
         "Feat": "Ballistics",
         "Intelligence": "6",
         "Tailoring": "35",
         "Type": "Crafting"
     },
     {
+        "NeedsAllSkills": "true",
+        "NeedsAllStats": "true",
         "Feat": "Bowyer",
         "Intelligence": "7",
         "Mechanics": "30",
         "Type": "Crafting"
     },
     {
+        "NeedsAllSkills": "true",
+        "NeedsAllStats": "true",
         "Feat": "Clothier",
         "Intelligence": "7",
         "Tailoring": "15",
         "Type": "Crafting"
     },
     {
+        "NeedsAllSkills": "true",
+        "NeedsAllStats": "true",
         "Feat": "Gun Nut",
         "Intelligence": "7",
         "Mechanics": "15",
         "Type": "Crafting"
     },
     {
+        "NeedsAllSkills": "true",
+        "NeedsAllStats": "true",
         "Feat": "Practical Physicist",
         "Intelligence": "7",
         "Electronics": "35",
         "Type": "Crafting"
     },
     {
+        "NeedsAllSkills": "true",
+        "NeedsAllStats": "true",
         "Feat": "Skinner",
         "Intelligence": "7",
         "Tailoring": "15",
         "Type": "Crafting"
     },
     {
+        "NeedsAllSkills": "true",
+        "NeedsAllStats": "true",
         "Feat": "Weaponsmith",
         "Intelligence": "6",
         "Mechanics": "25",
         "Type": "Crafting"
     },
     {
+        "NeedsAllSkills": "false",
+        "NeedsAllStats": "true",
         "Feat": "Aimed-Shot",
         "Guns": "10",
         "Crossbows": "10",
@@ -246,11 +323,21 @@
         "Type": "Assault Rifle, SMG, Crossbow, Sniper Rifle, Pistol"
     },
     {
+        "NeedsAllSkills": "true",
         "Feat": "Concussive Shots",
         "Crossbows": "30",
         "Type": "Crossbow"
     },
     {
+        "NeedsAllSkills": "false",
+        "Feat": "Critical Power",
+        "Melee": "75",
+        "Guns": "75",
+        "Crossbows": "75"
+    },
+    {   
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Deadly Snares",
         "Perception": "10",
         "Crossbows": "75",
@@ -258,11 +345,14 @@
         "Type": "Crossbow"
     },
     {
+        "NeedsAllSkills": "true",
         "Feat": "Elemental Bolts",
         "Crossbows": "75",
         "Type": "Crossbow"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "false",
         "Feat": "Kneecap Shot",
         "Perception": "7",
         "Crossbows": "25",
@@ -270,12 +360,16 @@
         "Type": "Pistol, Crossbow, SMG"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Marksman",
         "Dexterity": "5",
         "Crossbows": "15",
         "Type": "Crossbow"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "false",
         "Feat": "Scrutinous",
         "Perception": "11",
         "Crossbows": "120",
@@ -283,6 +377,8 @@
         "Melee": "120"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "false",
         "Feat": "Sharpshooter",
         "Perception": "10",
         "Crossbows": "60",
@@ -290,6 +386,9 @@
         "Type": "Pistol, Crossbow, Sniper Rifle"
     },
     {
+        "HardRequirement": "Stealth",
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "false",
         "Feat": "Snipe",
         "Crossbows": "35",
         "Guns": "35",
@@ -298,24 +397,31 @@
         "Type": "Sniper Rifle, Crossbow"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Special Tactics",
         "Intelligence": "6",
         "Crossbows": "50",
         "Type": "Crossbow"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Bullet Time",
         "Dexterity": "9",
         "Guns": "70",
-        "Type": "Pistol",
-        "Requires": "Gunslinger"
+        "Type": "Pistol"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "false",
         "Feat": "Burglar (feat)",
         "Dexterity": "6",
         "Hacking": "15"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Cheap Shots",
         "Dexterity": "6",
         "Intelligence": "5",
@@ -323,12 +429,16 @@
         "Type": "Knife, Sword, Fist, Spear, Hammer"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Combo",
         "Melee": "65",
         "Dexterity": "8",
         "Type": "Fist"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Cut-Throat",
         "Dexterity": "10",
         "Melee": "55",
@@ -336,74 +446,100 @@
         "Type": "Knife"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Deflection",
         "Dexterity": "6",
         "Melee": "35",
         "Type": "Fist"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Escape Artist",
         "Dexterity": "7",
         "Dodge": "30"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Eviscerate",
         "Dexterity": "8",
         "Melee": "80",
         "Type": "Knife"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Expert Throwing",
         "Level": "26",
         "Dexterity": "10",
         "Throwing": "100"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Fatal Throw",
         "Dexterity": "8",
         "Throwing": "50"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Flurry",
         "Dexterity": "6",
         "Melee": "30",
         "Type": "Sword"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Grenadier",
         "Dexterity": "6",
         "Throwing": "30"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Gunslinger",
         "Dexterity": "7",
         "Guns": "15",
         "Type": "Pistol"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Leading Shot",
         "Dexterity": "5",
         "Guns": "35",
         "Type": "Shotgun"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Lightning Punches",
         "Dexterity": "8",
         "Melee": "25",
         "Type": "Fist"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Parry",
         "Dexterity": "6",
         "Melee": "30",
         "Type": "Sword, Knife"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Pinning",
         "Dexterity": "7",
         "Throwing": "40"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Point Shot",
         "Perception": "6",
         "Dexterity": "6",
@@ -411,24 +547,32 @@
         "Type": "Assault Rifle, SMG, Pistol"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Quick Tinkering",
         "Dexterity": "7",
         "Traps": "25",
         "Type": "Traps"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Remote Surgeon",
         "Dexterity": "8",
         "Throwing": "60",
         "Biology": "25"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Riposte",
         "Dexterity": "7",
         "Melee": "40",
         "Type": "Sword"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "false",
         "Feat": "Ripper",
         "Dexterity": "10",
         "Will": "5",
@@ -437,6 +581,8 @@
         "Type": "Knife"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Spear Guardian",
         "Strength": "6",
         "Dexterity": "5",
@@ -444,6 +590,8 @@
         "Type": "Spear"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Spear Throw",
         "Dexterity": "5",
         "Melee": "20",
@@ -451,11 +599,15 @@
         "Type": "Spear"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Split Spare",
         "Dexterity": "10",
         "Throwing": "80"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Steadfast Aim",
         "Strength": "5",
         "Dexterity": "6",
@@ -463,169 +615,216 @@
         "Type": "Pistol"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Three-Pointer",
         "Dexterity": "7",
         "Throwing": "50"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Trap Expert",
         "Dexterity": "6",
         "Traps": "30",
         "Type": "Traps"
     },
     {
+        "NeedsAllStats": "true",
         "Feat": "Trigger Happy",
         "Dexterity": "6"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "false",
         "Feat": "Disassemble",
         "Intelligence": "7",
-        "Mechanics": "20"
+        "Mechanics": "20",
+        "Electronics": "20"
     },
     {
+        "NeedsAllSkills": "true",
         "Feat": "Barrel Stare",
         "Guns": "50",
         "Type": "Shotgun"
     },
     {
+        "NeedsAllSkills": "true",
         "Feat": "Blindsiding",
         "Stealth": "80",
         "Type": "Stealth"
     },
     {
+        "NeedsAllSkills": "true",
         "Feat": "Boarding Up",
         "Melee": "60"
     },
     {
+        "NeedsAllSkills": "true",
         "Feat": "Brutality",
         "Intimidation": "75",
         "Melee": "50"
     },
     {
+        "NeedsAllSkills": "true",
         "Feat": "Continuum Ripple",
         "Temporal Manipulation": "30",
         "Type": "Temporal Manipulation"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Decapitate",
         "Strength": "7",
         "Melee": "40",
         "Type": "Sword"
     },
     {
+        "NeedsAllSkills": "true",
         "Feat": "Empowered Temporal Manipulation",
         "Level": "26",
         "Temporal Manipulation": "100"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Fragmented Chaos",
         "Perception": "9",
         "Guns": "70",
         "Type": "Shotgun"
     },
     {
+        "NeedsAllSkills": "true",
         "Feat": "Future Orientation",
         "Temporal Manipulation": "60",
         "Type": "Temporal Manipulation"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Impale",
         "Strength": "7",
         "Melee": "40",
         "Type": "Spear"
     },
     {
+        "NeedsAllStats": "true",
         "Feat": "Iron Grip",
         "Strength": "11"
     },
     {
+        "NeedsAllSkills": "true",
         "Feat": "Onslaught",
         "Melee": "75",
         "Type": "Sword"
     },
     {
+        "NeedsAllSkills": "true",
         "Feat": "Pellet Mayhem",
         "Guns": "40",
         "Type": "Shotgun"
     },
     {
+        "NeedsAllSkills": "true",
         "Feat": "Perfect Scattering",
         "Guns": "65",
         "Type": "Shotgun"
     },
     {
+        "NeedsAllSkills": "true",
         "Feat": "Psycho-temporal Acceleration",
         "Temporal Manipulation": "45"
     },
     {
+        "NeedsAllStats": "true",
         "Feat": "Shield Arm",
         "Strength": "8"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Shield Bash",
         "Strength": "6",
         "Melee": "40"
     },
     {
+        "NeedsAllSkills": "true",
         "Feat": "Shooting Spree",
         "Guns": "55",
         "Type": "Sniper Rifle"
     },
     {
+        "NeedsAllSkills": "true",
         "Feat": "Sixth Shell",
         "Guns": "20",
         "Type": "Shotgun"
     },
     {
+        "NeedsAllSkills": "true",
         "Feat": "Commando",
         "Guns": "80",
         "Type": "Assault Rifle, SMG"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Concentrated Fire",
         "Perception": "8",
         "Guns": "60",
         "Type": "Assault Rifle"
     },
     {
+        "NeedsAllSkills": "true",
         "Feat": "Execute",
         "Guns": "70",
         "Type": "Pistol"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Full-Auto",
         "Strength": "7",
         "Guns": "40",
         "Type": "Assault Rifle"
     },
     {
+        "NeedsAllSkills": "true",
         "Feat": "Gun-Fu",
         "Guns": "40",
         "Melee": "40",
         "Type": "Pistol"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "High-Technicalities",
         "Intelligence": "5",
         "Guns": "25"
     },
     {
+        "NeedsAllSkills": "true",
         "Feat": "Rapid Fire",
         "Guns": "50",
         "Type": "Assault Rifle, SMG, Pistol"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Suppressive Fire",
         "Perception": "6",
         "Guns": "10",
         "Type": "Assault Rifle, SMG"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Expose Weakness",
         "Melee": "40",
         "Intelligence": "5"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "false",
         "Feat": "Meditation",
         "Will": "7",
         "Intelligence": "5",
@@ -635,11 +834,15 @@
         "Temporal Manipulation": "50"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Power Management",
         "Intelligence": "7",
         "Electronics": "15"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "false",
         "Feat": "Premeditation",
         "Intelligence": "6",
         "Metathermics": "40",
@@ -648,153 +851,197 @@
         "Temporal Manipulation": "40"
     },
     {
+        "NeedsAllStats": "true",
         "Feat": "Versatility",
         "Intelligence": "5"
     },
     {
+        "NeedsAllSkills": "false",
         "Feat": "Yell",
         "Intimidation": "20"
     },
     {
+        "NeedsAllSkills": "false",
         "Feat": "Jet 'n' Jab",
         "Melee": "50"
     },
     {
+        "NeedsAllSkills": "false",
         "Feat": "Naval Jousting",
         "Melee": "70"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Bone Breaker",
         "Strength": "7",
         "Melee": "45"
     },
     {
+        "NeedsAllSkills": "true",
         "Feat": "Crippling Strike",
         "Melee": "30"
     },
     {
+        "NeedsAllSkills": "true",
         "Feat": "Dirty Kick",
         "Melee": "25"
     },
     {
+        "NeedsAllSkills": "true",
         "Feat": "Expert Unarmed Combat",
         "Level": "26",
         "Melee": "100",
         "Type": "Fist"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Fancy Footwork",
         "Agility": "7",
         "Melee": "40",
         "Dodge": "40"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Guard (feat)",
         "Strength": "7",
         "Melee": "50"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Heavy Punch",
         "Strength": "5",
         "Melee": "15",
         "Type": "Fist"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Heavyweight",
         "Strength": "10",
         "Melee": "100"
     },
     {
+        "NeedsAllSkills": "true",
         "Feat": "Improved Unarmed Combat",
         "Melee": "35"
     },
     {
+        "NeedsAllSkills": "true",
         "Feat": "Pummel",
         "Melee": "20",
         "Type": "Hammer"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Super Slam",
         "Strength": "10",
         "Melee": "75",
         "Type": "Hammer"
     },
     {
+        "NeedsAllSkills": "true",
         "Feat": "Taste for Blood",
         "Melee": "50"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Wrestling",
         "Strength": "7",
         "Melee": "40",
         "Type": "Fist"
     },
     {
+        "NeedsAllSkills": "true",
         "Feat": "Major Supplier",
         "Level": "26",
         "Mercantile": "50"
     },
     {
+        "NeedsAllSkills": "true",
         "Feat": "Salesman",
         "Mercantile": "35"
     },
     {
+        "NeedsAllSkills": "true",
         "Feat": "Cryogenic Induction",
         "Metathermics": "50",
         "Type": "Metathermics"
     },
     {
+        "NeedsAllSkills": "true",
         "Feat": "Empowered Metathermics",
         "Level": "26",
         "Metathermics": "100",
         "Type": "Metathermics"
     },
     {
+        "NeedsAllSkills": "true",
         "Feat": "Hypothermia",
         "Metathermics": "40",
         "Type": "Metathermics"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "false",
         "Feat": "Neural Overclocking",
         "Will": "10",
-        "skill": "65"
+        "Metathermics": "25",
+        "Psychokinesis": "25",
+        "Thought Control": "25",
+        "Temporal Manipulation": "25"
     },
     {
+        "NeedsAllSkills": "true",
         "Feat": "Pyromaniac",
         "Metathermics": "35",
         "Type": "Metathermics"
     },
     {
+        "NeedsAllSkills": "true",
         "Feat": "Thermodynamicity",
         "Metathermics": "30",
         "Type": "Metathermics"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Ambush",
         "Perception": "6",
         "Stealth": "40"
     },
     {
+        "NeedsAllSkills": "true",
         "Feat": "Cerebral Trauma",
         "Thought Control": "25"
     },
     {
+        "NeedsAllStats": "true",
         "Feat": "Corporeal Projection",
         "Strength": "6"
     },
     {
+        "NeedsAllSkills": "true",
         "Feat": "Empowered Psychokinesis",
         "Level": "26",
         "Psychokinesis": "100",
         "Type": "Psychokinesis"
     },
     {
+        "NeedsAllSkills": "true",
         "Feat": "Empowered Thought Control",
         "Level": "26",
         "Thought Control": "100",
         "Type": "Thought Control"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "false",
         "Feat": "Expanded Psi Capacitance",
         "Intelligence": "5",
         "Metathermics": "25",
@@ -803,17 +1050,23 @@
         "Temporal Manipulation": "25"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Force User",
         "Will": "7",
         "Psychokinesis": "25"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Locus of Control",
         "Will": "10",
         "Thought Control": "75",
         "Type": "Thought Control"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "false",
         "Feat": "Mantra",
         "Level": "26",
         "Will": "8",
@@ -823,12 +1076,16 @@
         "Temporal Manipulation": "100"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Mental Subversion",
         "Will": "6",
         "Thought Control": "30",
         "Type": "Thought Control"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "false",
         "Feat": "Psionic Mania",
         "Will": "8",
         "Metathermics": "100",
@@ -837,6 +1094,8 @@
         "Temporal Manipulation": "100"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "false",
         "Feat": "Psycho-neural Flexibility",
         "Intelligence": "8",
         "Metathermics": "55",
@@ -845,6 +1104,8 @@
         "Temporal Manipulation": "55"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "false",
         "Feat": "Psycho-neural Optimization",
         "Will": "8",
         "Metathermics": "55",
@@ -853,30 +1114,37 @@
         "Temporal Manipulation": "55"
     },
     {
+        "NeedsAllSkills": "true",
         "Feat": "Psychostatic Electricity",
         "Psychokinesis": "40"
     },
     {
+        "NeedsAllStats": "true",
         "Feat": "Telekinetic Undulation",
         "Will": "5"
     },
     {
+        "NeedsAllStats": "true",
         "Feat": "Body Weight Training",
         "Level": "26",
         "Strength": "10"
     },
     {
+        "NeedsAllStats": "true",
+        "NeedsAllSkills": "true",
         "Feat": "Expert Evasion",
         "Level": "26",
         "Agility": "12",
         "Evasion": "120"
     },
     {
+        "NeedsAllStats": "true",
         "Feat": "Fight Response",
         "Level": "26",
         "Will": "7"
     },
     {
+        "NeedsAllStats": "true",
         "Feat": "Iron Will",
         "Level": "26",
         "Will": "7"
