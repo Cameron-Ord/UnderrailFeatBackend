@@ -13,6 +13,7 @@ import (
 )
 
 func handler(w http.ResponseWriter, r *http.Request) {
+
 	vars := mux.Vars(r)
 	endpoint := vars["endpoint"]
 	switch endpoint {
@@ -96,14 +97,18 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	// setting the router to handle paths
 	r := mux.NewRouter()
-	r.HandleFunc("/api/{endpoint}", handler).Methods("POST")
+	//sends the /api/endpoint to the handler
+	r.HandleFunc("/api/{endpoint}", handler).Methods("POST", "GET", "DELETE", "UPDATE")
+	//setting cors, currently set with wildcard for testing
 	corsHandler := handlers.CORS(
 		handlers.AllowedOrigins([]string{"*"}),
-		handlers.AllowedMethods([]string{"POST"}),
+		handlers.AllowedMethods([]string{"POST", "GET", "DELETE", "UPDATE"}),
 		handlers.AllowedHeaders([]string{"Content-Type"}),
 	)
 	http.Handle("/", corsHandler(r))
+	//listening on the set port
 	port := "6969"
 	fmt.Printf("Server is running on http://localhost:%s\n", port)
 	http.ListenAndServe(":"+port, nil)
