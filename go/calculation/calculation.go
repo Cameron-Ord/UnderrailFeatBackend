@@ -26,9 +26,9 @@ type RequestData struct {
 
 func checkSkillStat(feats []map[string]string, data RequestData) ([]string, error) {
 	fmt.Println(" ")
-	fmt.Println("----------------------")
+	fmt.Println("////////////////////////")
 	fmt.Println("Checking skills and stats...")
-	fmt.Println("----------------------")
+	fmt.Println("////////////////////////")
 	fmt.Println(" ")
 	var StatSkillFeats = []string{}
 
@@ -176,9 +176,9 @@ func checkSkillStat(feats []map[string]string, data RequestData) ([]string, erro
 
 func checkStat(feats []map[string]string, data RequestData) ([]string, error) {
 	fmt.Println(" ")
-	fmt.Println("----------------------")
+	fmt.Println("////////////////////////")
 	fmt.Println("Checking stats...")
-	fmt.Println("----------------------")
+	fmt.Println("////////////////////////")
 	fmt.Println(" ")
 	var StatFeats = []string{}
 
@@ -255,9 +255,9 @@ func convertToInt(givenNumStr string) (int, error) {
 
 func checkSkill(feats []map[string]string, data RequestData) ([]string, error) {
 	fmt.Println(" ")
-	fmt.Println("----------------------")
+	fmt.Println("////////////////////////")
 	fmt.Println("Checking skills...")
-	fmt.Println("----------------------")
+	fmt.Println("////////////////////////")
 	fmt.Println(" ")
 	var SkillFeats = []string{}
 
@@ -366,9 +366,9 @@ func marshalData(sentSlice []string) ([]byte, error) {
 
 func PrepareData(data RequestData) ([]byte, error) {
 	fmt.Println(" ")
-	fmt.Println("----------------------")
+	fmt.Println("////////////////////////")
 	fmt.Println("Starting calculation..")
-	fmt.Println("----------------------")
+	fmt.Println("////////////////////////")
 	fmt.Println(" ")
 
 	var feats []map[string]string
@@ -394,9 +394,9 @@ func PrepareData(data RequestData) ([]byte, error) {
 	fmt.Println("..Done")
 
 	fmt.Println(" ")
-	fmt.Println("----------------------")
+	fmt.Println("////////////////////////")
 	fmt.Println("Appending...")
-	fmt.Println("----------------------")
+	fmt.Println("////////////////////////")
 	fmt.Println(" ")
 	var allAllocatedFeats []string
 	allAllocatedFeats = append(StatFeats, SkillFeats...)
