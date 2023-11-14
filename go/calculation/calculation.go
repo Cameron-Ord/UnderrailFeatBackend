@@ -68,14 +68,22 @@ func checkSkillStat(feats []map[string]string, data RequestData) ([]string, erro
 				if _, ok := feat[skillName]; ok {
 					hasSkillRequirement = true
 					break
+				} else {
+					hasSkillRequirement = false
 				}
 			}
 
 			if len(statsFailed) > 0 {
 				for _, statfail := range statsFailed {
+					fmt.Println("-----------------------------")
 					fmt.Println("SKILL/STAT = {FAILED}:", "({"+statfail, "->", "at iteration}):", i, "||", "{Feat}:", "({"+feat["Feat"], "->", "needs}):", feat[statfail], statfail)
+					fmt.Println("-----------------------------")
+
 					if statrequire, ok := feat["NeedsAllStats"]; ok {
 						if statrequire == "true" {
+							fmt.Println(" ")
+							fmt.Println(feat["Feat"], "{FAILED AT STATREQUIRE}:", "Cause ->", statfail)
+							fmt.Println(" ")
 							noFails = false
 							break
 						} else if statrequire == "false" {
@@ -112,38 +120,51 @@ func checkSkillStat(feats []map[string]string, data RequestData) ([]string, erro
 					for _, skillmet := range skillsMet {
 						if hardreq, ok := feat["HardRequirement"]; ok {
 							if skillmet != hardreq {
-								fmt.Println("breaking")
+								fmt.Println(" ")
+								fmt.Println("{Breaking at hardreq check}:", "->", feat["Feat"])
+								fmt.Println(" ")
 								break
 							} else {
 								noFails = false
 							}
 						} else {
+							fmt.Println(" ")
+							fmt.Println("{Breaking at hardreq check}:", "->", feat["Feat"])
+							fmt.Println(" ")
 							break
 						}
 					}
 					if noFails && len(skillsFailed) > 0 {
 						for _, failed := range skillsFailed {
+							fmt.Println("-----------------------------")
 							fmt.Println("SKILL = {FAILED}:", "({"+failed, "->", "at iteration}):", i, "||", "{Feat}:", "({"+feat["Feat"], "->", "needs}):", feat[failed], failed)
+							fmt.Println("-----------------------------")
 							if skillrequire, ok := feat["NeedsAllSkills"]; ok {
 								if skillrequire == "false" {
 									if requirement, ok := feat["HardRequirement"]; ok && requirement == failed {
 										noFails = false
-										fmt.Println("failed break")
+										fmt.Println(" ")
+										fmt.Println("{Failed break}:", "->", feat["Feat"])
+										fmt.Println(" ")
 										break
 									}
 								} else if skillrequire == "true" {
 									noFails = false
-									fmt.Println("failed break")
+									fmt.Println(" ")
+									fmt.Println("{Failed break}:", "->", feat["Feat"])
+									fmt.Println(" ")
 									break
 								}
 							}
 						}
-						if noFails {
-							StatSkillFeats = append(StatSkillFeats, feat["Feat"])
-							fmt.Println("SKILL/STAT = {MET}", feat["Feat"], "Appended at iteration:", "->", i, "noFails:", noFails)
-						}
-					}
 
+					}
+					if noFails {
+						StatSkillFeats = append(StatSkillFeats, feat["Feat"])
+						fmt.Println("-----------------------------")
+						fmt.Println("SKILL/STAT = {MET}", feat["Feat"], "Appended at iteration:", "->", i, "noFails:", noFails)
+						fmt.Println("-----------------------------")
+					}
 				}
 			}
 
