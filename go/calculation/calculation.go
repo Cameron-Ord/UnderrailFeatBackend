@@ -93,7 +93,7 @@ func checkSkillStat(feats []map[string]string, data RequestData) ([]string, erro
 				}
 			}
 
-			if hasSkillRequirement {
+			if hasSkillRequirement && noFails {
 				for l := 0; l < len(data.Skills); l++ {
 					skill := data.Skills[l]
 					var skillName string = skill.SkillName
@@ -132,6 +132,7 @@ func checkSkillStat(feats []map[string]string, data RequestData) ([]string, erro
 					} else {
 						noFails = true
 					}
+
 					if noFails && len(skillsFailed) > 0 {
 						for _, failed := range skillsFailed {
 							fmt.Println("-----------------------------")
@@ -167,10 +168,8 @@ func checkSkillStat(feats []map[string]string, data RequestData) ([]string, erro
 					}
 				}
 			}
-
 		}
 	}
-
 	return StatSkillFeats, nil
 }
 
@@ -224,7 +223,6 @@ func checkStat(feats []map[string]string, data RequestData) ([]string, error) {
 				}
 			}
 			if len(statsFailed) > 0 {
-				// this is kind of unnecessary as this slice being populated alone is enough to make this fail, but hey, why not
 				for _, failed := range statsFailed {
 					fmt.Println("STAT = {FAILED}:", "({"+failed, "->", "at iteration}):", i, "||", "{Feat}:", "({"+feat["Feat"], "->", "needs}):", feat[failed], failed)
 					if required, ok := feat["NeedsAllStats"]; ok {
@@ -313,12 +311,13 @@ func checkSkill(feats []map[string]string, data RequestData) ([]string, error) {
 			}
 			//if the hasStatRequirement bool is false, continues
 			if !hasStatRequirement {
-				/*using a range loop to go through skillsMet
-				the purpose of this is to make sure that in the case a feat has a hardrequirement,
-				it will ensure that the other skills that are associated with it didn't get left out.
-				Otherwise, with the following code, since the hardrequirement is literally required and all other skills aren't(You just need atleast one),
-				it will return the feat despite none of the other skills associated with the feat being present
-				So this is just a simple check in that case, if ok gets assigned false here it will just skip the block entirely
+				/*
+					using a range loop to go through skillsMet
+					the purpose of this is to make sure that in the case a feat has a hardrequirement,
+					it will ensure that the other skills that are associated with it didn't get left out.
+					Otherwise, with the following code, since the hardrequirement is literally required and all other skills aren't(You just need atleast one),
+					it will return the feat despite none of the other skills associated with the feat being present
+					So this is just a simple check in that case, if ok gets assigned false here it will just skip the block entirely
 				*/
 				if hardreq, ok := feat["HardRequirement"]; ok {
 					for _, skillmet := range skillsMet {
@@ -343,9 +342,10 @@ func checkSkill(feats []map[string]string, data RequestData) ([]string, error) {
 						if skillrequire, ok := feat["NeedsAllSkills"]; ok {
 							//if the value is a string representing "false"
 							if skillrequire == "false" {
-								/*if ok is true, assigns the hardrequirement value to requirement then checks if the string equals the failed string.
-								if the requirement is equal to the failed skill, it will break the loop and set the noFails bool to false, otherwise, stays true.
-								the true statements are a little reduntant but its clear what it does atleast.
+								/*
+									if ok is true, assigns the hardrequirement value to requirement then checks if the string equals the failed string.
+									if the requirement is equal to the failed skill, it will break the loop and set the noFails bool to false, otherwise, stays true.
+									the true statements are a little reduntant but its clear what it does atleast.
 								*/
 								if requirement, ok := feat["HardRequirement"]; ok && requirement == failed {
 									noFails = false
@@ -370,7 +370,6 @@ func checkSkill(feats []map[string]string, data RequestData) ([]string, error) {
 				}
 			}
 		}
-
 	}
 	//returning the populated slice
 	return SkillFeats, nil
