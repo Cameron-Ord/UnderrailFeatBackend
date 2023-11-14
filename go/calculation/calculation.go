@@ -25,7 +25,11 @@ type RequestData struct {
 }
 
 func checkSkillStat(feats []map[string]string, data RequestData) ([]string, error) {
-
+	fmt.Println(" ")
+	fmt.Println("----------------------")
+	fmt.Println("Checking skills and stats...")
+	fmt.Println("----------------------")
+	fmt.Println(" ")
 	var StatSkillFeats = []string{}
 
 	for i := 0; i < len(feats); i++ {
@@ -110,7 +114,11 @@ func checkSkillStat(feats []map[string]string, data RequestData) ([]string, erro
 }
 
 func checkStat(feats []map[string]string, data RequestData) ([]string, error) {
-
+	fmt.Println(" ")
+	fmt.Println("----------------------")
+	fmt.Println("Checking stats...")
+	fmt.Println("----------------------")
+	fmt.Println(" ")
 	var StatFeats = []string{}
 
 	for i := 0; i < len(feats); i++ {
@@ -180,7 +188,11 @@ func convertToInt(givenNumStr string) (int, error) {
 }
 
 func checkSkill(feats []map[string]string, data RequestData) ([]string, error) {
-
+	fmt.Println(" ")
+	fmt.Println("----------------------")
+	fmt.Println("Checking skills...")
+	fmt.Println("----------------------")
+	fmt.Println(" ")
 	var SkillFeats = []string{}
 
 	for i := 0; i < len(feats); i++ {
@@ -266,39 +278,26 @@ func PrepareData(data RequestData) ([]byte, error) {
 
 	var feats []map[string]string
 	feats = unloadJson()
-	fmt.Println(" ")
-	fmt.Println("----------------------")
-	fmt.Println("Checking skills...")
-	fmt.Println("----------------------")
-	fmt.Println(" ")
 	SkillFeats, err := checkSkill(feats, data)
 	if err != nil {
 		return nil, err
 	}
 	fmt.Println(" ")
 	fmt.Println("..Done")
-	fmt.Println(" ")
-	fmt.Println("----------------------")
-	fmt.Println("Checking stats...")
-	fmt.Println("----------------------")
-	fmt.Println(" ")
+
 	StatFeats, err := checkStat(feats, data)
 	if err != nil {
 		return nil, err
 	}
 	fmt.Println(" ")
 	fmt.Println("..Done")
-	fmt.Println(" ")
-	fmt.Println("----------------------")
-	fmt.Println("Checking skills and stats...")
-	fmt.Println("----------------------")
-	fmt.Println(" ")
 	StatSkillFeats, err := checkSkillStat(feats, data)
 	if err != nil {
 		return nil, err
 	}
 	fmt.Println(" ")
 	fmt.Println("..Done")
+
 	fmt.Println(" ")
 	fmt.Println("----------------------")
 	fmt.Println("Appending...")
@@ -313,9 +312,10 @@ func PrepareData(data RequestData) ([]byte, error) {
 	}
 	fmt.Println(" ")
 	fmt.Println("..Done")
+
 	fmt.Println(" ")
 	fmt.Println("----------------------")
-	fmt.Println("Finished...")
+	fmt.Println("Finished... making response..")
 	fmt.Println("----------------------")
 	fmt.Println(" ")
 	return jsonData, nil
