@@ -117,22 +117,20 @@ func checkSkillStat(feats []map[string]string, data RequestData) ([]string, erro
 				}
 
 				if len(skillsMet) > 0 {
-					for _, skillmet := range skillsMet {
-						if hardreq, ok := feat["HardRequirement"]; ok {
+					if hardreq, ok := feat["HardRequirement"]; ok {
+						for _, skillmet := range skillsMet {
 							if skillmet != hardreq {
 								fmt.Println(" ")
 								fmt.Println("{Breaking at hardreq check}:", "->", feat["Feat"])
 								fmt.Println(" ")
+								noFails = true
 								break
 							} else {
 								noFails = false
 							}
-						} else {
-							fmt.Println(" ")
-							fmt.Println("{Breaking at hardreq check}:", "->", feat["Feat"])
-							fmt.Println(" ")
-							break
 						}
+					} else {
+						noFails = true
 					}
 					if noFails && len(skillsFailed) > 0 {
 						for _, failed := range skillsFailed {
@@ -147,6 +145,8 @@ func checkSkillStat(feats []map[string]string, data RequestData) ([]string, erro
 										fmt.Println("{Failed break}:", "->", feat["Feat"])
 										fmt.Println(" ")
 										break
+									} else {
+										noFails = true
 									}
 								} else if skillrequire == "true" {
 									noFails = false
@@ -260,28 +260,35 @@ func checkSkill(feats []map[string]string, data RequestData) ([]string, error) {
 	fmt.Println("////////////////////////")
 	fmt.Println(" ")
 	var SkillFeats = []string{}
-
+	//looping for the length of the feats map
 	for i := 0; i < len(feats); i++ {
+		//assigning individual feat by index
 		feat := feats[i]
+		//declaring some variables
 		var hasStatRequirement bool = false
 		var noFails bool = true
 		var skillsMet = []string{}
 		var skillsFailed = []string{}
-
+		//looping for the length of the skills sent from frontend
 		for j := 0; j < len(data.Skills); j++ {
+			//assigning individual skill from index in order to access the skillName and skillValue
 			skill := data.Skills[j]
 			var skillName string = skill.SkillName
 			var skillValue string = skill.SkillValue
+			//if the feat contains the current skillname(from index), sets the value from feat to the requirement variable if ok gets set to true
 			if requirement, ok := feat[skillName]; ok {
 				var featRequirement string = requirement
+				//runs the conversion function and assigns returned values
 				skillRequirement, err := convertToInt(featRequirement)
 				if err != nil {
 					return nil, err
 				}
+				//runs the conversion function and assigns returned values
 				givenSkillValue, err := convertToInt(skillValue)
 				if err != nil {
 					return nil, err
 				}
+				//performs the checks, assigns to a respective slice depending on the outcome
 				if givenSkillValue >= skillRequirement {
 					skillsMet = append(skillsMet, skillName)
 				} else if givenSkillValue < skillRequirement {
@@ -289,10 +296,14 @@ func checkSkill(feats []map[string]string, data RequestData) ([]string, error) {
 				}
 			}
 		}
+		//if there are skills met
 		if len(skillsMet) > 0 {
+			//looping through stats sent from frontend
 			for k := 0; k < len(data.Stats); k++ {
+				//assiging variable by index
 				stat := data.Stats[k]
 				var statName string = stat.StatName
+				//if the feat contains any of the stats, it will break the loop and set the hasStatRequirement variable to true
 				if _, ok := feat[statName]; ok {
 					hasStatRequirement = true
 					break
@@ -300,30 +311,50 @@ func checkSkill(feats []map[string]string, data RequestData) ([]string, error) {
 					hasStatRequirement = false
 				}
 			}
+			//if the hasStatRequirement bool is false, continues
 			if !hasStatRequirement {
-				for _, skillmet := range skillsMet {
-					if hardreq, ok := feat["HardRequirement"]; ok {
+				/*using a range loop to go through skillsMet
+				the purpose of this is to make sure that in the case a feat has a hardrequirement,
+				it will ensure that the other skills that are associated with it didn't get left out.
+				Otherwise, with the following code, since the hardrequirement is literally required and all other skills aren't(You just need atleast one),
+				it will return the feat despite none of the other skills associated with the feat being present
+				So this is just a simple check in that case, if ok gets assigned false here it will just skip the block entirely
+				*/
+				if hardreq, ok := feat["HardRequirement"]; ok {
+					for _, skillmet := range skillsMet {
 						if skillmet != hardreq {
-							fmt.Println("breaking")
+							fmt.Println(skillmet, "->", "{Exists}", "Continuing..")
+							noFails = true
 							break
 						} else {
 							noFails = false
 						}
-					} else {
-						break
 					}
+					//skips the block entirely if ok is false
+				} else {
+					fmt.Println("Hardreq -> {SKIPPED}")
+					noFails = true
 				}
-
+				//if noFails is still true and the skillsFailed slice is populated..
 				if noFails && len(skillsFailed) > 0 {
 					for _, failed := range skillsFailed {
 						fmt.Println("SKILL = {FAILED}:", "({"+failed, "->", "at iteration}):", i, "||", "{Feat}:", "({"+feat["Feat"], "->", "needs}):", feat[failed], failed)
+						//if ok is true here, it will then assign and check the NeedsAllSkills value
 						if skillrequire, ok := feat["NeedsAllSkills"]; ok {
+							//if the value is a string representing "false"
 							if skillrequire == "false" {
+								/*if ok is true, assigns the hardrequirement value to requirement then checks if the string equals the failed string.
+								if the requirement is equal to the failed skill, it will break the loop and set the noFails bool to false, otherwise, stays true.
+								the true statements are a little reduntant but its clear what it does atleast.
+								*/
 								if requirement, ok := feat["HardRequirement"]; ok && requirement == failed {
 									noFails = false
 									fmt.Println("failed break")
 									break
+								} else {
+									noFails = true
 								}
+								//if the feat does require all skills, then it's a flatout fail for this one chief
 							} else if skillrequire == "true" {
 								noFails = false
 								fmt.Println("failed break")
@@ -332,6 +363,7 @@ func checkSkill(feats []map[string]string, data RequestData) ([]string, error) {
 						}
 					}
 				}
+				//finally, if there are no fails for this iteration of Feats, it will append the feat
 				if noFails {
 					SkillFeats = append(SkillFeats, feat["Feat"])
 					fmt.Println("SKILL = {MET}", feat["Feat"], "Appended at iteration:", "->", i, "hasStatRequirement:", hasStatRequirement)
@@ -344,6 +376,7 @@ func checkSkill(feats []map[string]string, data RequestData) ([]string, error) {
 }
 
 func unloadJson() []map[string]string {
+	//reading the json file and unmarshalling it into the set data type
 	jsonFile, err := os.ReadFile("jsonData/FeatsData.json")
 	if err != nil {
 		log.Fatal("Error reading file:", err)
@@ -353,59 +386,56 @@ func unloadJson() []map[string]string {
 	if err != nil {
 		log.Fatal("Error decoding JSON data:", err)
 	}
+	//returning the feats map
 	return feats
 }
 
 func marshalData(sentSlice []string) ([]byte, error) {
+	//assigning jsondata from the sentslice(the amalgamation of the results from all the checks)
 	jsonData, err := json.Marshal(sentSlice)
 	if err != nil {
 		return nil, err
 	}
+	//returning the data
 	return jsonData, nil
 }
 
 func PrepareData(data RequestData) ([]byte, error) {
+
+	// init the calculation
 	fmt.Println(" ")
 	fmt.Println("////////////////////////")
 	fmt.Println("Starting calculation..")
 	fmt.Println("////////////////////////")
 	fmt.Println(" ")
-
+	//declare the variable to hold the featsdata json file
 	var feats []map[string]string
+	//assigning the data with a return function
 	feats = unloadJson()
+	//checking feats that require only skills
 	SkillFeats, err := checkSkill(feats, data)
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(" ")
-	fmt.Println("..Done")
-
+	//checking feats that require only stats
 	StatFeats, err := checkStat(feats, data)
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(" ")
-	fmt.Println("..Done")
+	//checking feats that require stats and skills only
 	StatSkillFeats, err := checkSkillStat(feats, data)
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(" ")
-	fmt.Println("..Done")
-
-	fmt.Println(" ")
-	fmt.Println("////////////////////////")
-	fmt.Println("Appending...")
-	fmt.Println("////////////////////////")
-	fmt.Println(" ")
+	//gathering all the feats that got assigned from each check into a single slice
 	var allAllocatedFeats []string
 	allAllocatedFeats = append(StatFeats, SkillFeats...)
 	allAllocatedFeats = append(allAllocatedFeats, StatSkillFeats...)
+	//marshalling the data to JSON format using a return function
 	jsonData, err := marshalData(allAllocatedFeats)
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(" ")
-	fmt.Println("..Done")
+	//returning the json data
 	return jsonData, nil
 }
