@@ -312,11 +312,5 @@ func PrepareData(data RequestData) ([]byte, error) {
 	}
 	fmt.Println(" ")
 	fmt.Println("..Done")
-
-	fmt.Println(" ")
-	fmt.Println("----------------------")
-	fmt.Println("Finished... making response..")
-	fmt.Println("----------------------")
-	fmt.Println(" ")
 	return jsonData, nil
 }

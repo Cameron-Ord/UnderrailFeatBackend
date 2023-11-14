@@ -24,6 +24,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	case "save-build":
 
 	case "signup":
+
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Methods", "POST")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
@@ -43,6 +44,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 
 	case "login":
+
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Methods", "POST")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
@@ -81,6 +83,11 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		returnedFeats, err := calculation.PrepareData(data)
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
+		fmt.Println(" ")
+		fmt.Println("----------------------")
+		fmt.Println("Finished... making response..")
+		fmt.Println("----------------------")
+		fmt.Println(" ")
 		w.Write(returnedFeats)
 		return
 	default:
