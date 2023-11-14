@@ -110,11 +110,13 @@ func checkSkillStat(feats []map[string]string, data RequestData) ([]string, erro
 
 				if len(skillsMet) > 0 {
 					for _, skillmet := range skillsMet {
-						if hardreq, ok := feat["HardRequirement"]; ok && skillmet != hardreq {
-							fmt.Println("has skill, breaking")
-							break
-						} else if hardreq, ok := feat["HardRequirement"]; ok && skillmet == hardreq {
-							noFails = false
+						if hardreq, ok := feat["HardRequirement"]; ok {
+							if skillmet != hardreq {
+								fmt.Println("breaking")
+								break
+							} else {
+								noFails = false
+							}
 						} else {
 							break
 						}
@@ -279,11 +281,15 @@ func checkSkill(feats []map[string]string, data RequestData) ([]string, error) {
 			}
 			if !hasStatRequirement {
 				for _, skillmet := range skillsMet {
-					if hardreq, ok := feat["HardRequirement"]; ok && skillmet != hardreq {
-						fmt.Println("has skill, breaking")
-						break
+					if hardreq, ok := feat["HardRequirement"]; ok {
+						if skillmet != hardreq {
+							fmt.Println("breaking")
+							break
+						} else {
+							noFails = false
+						}
 					} else {
-						noFails = false
+						break
 					}
 				}
 
