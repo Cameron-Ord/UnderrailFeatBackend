@@ -372,6 +372,7 @@ func checkSkill(feats []map[string]string, data RequestData) ([]string, error) {
 		}
 
 	}
+	//returning the populated slice
 	return SkillFeats, nil
 }
 
