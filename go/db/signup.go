@@ -8,15 +8,12 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-type LoginData struct {
+type SignupData struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
 
-type SignupData struct {
-}
-
-func main() {
+func ConnectForSignup(signupQuery SignupData) {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", DBUsername, DBPassword, DBHost, DBPort, DBName)
 	dbConn, err := sql.Open("mysql", dsn)
 	if err != nil {
@@ -29,4 +26,5 @@ func main() {
 		log.Fatal(err)
 	}
 	fmt.Println("Connected to the database!")
+	fmt.Println()
 }
