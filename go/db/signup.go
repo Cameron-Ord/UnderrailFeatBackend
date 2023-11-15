@@ -6,11 +6,32 @@ import (
 	"log"
 
 	_ "github.com/go-sql-driver/mysql"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type SignupData struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
+}
+
+func hashPassword(signupQuery *SignupData) error {
+
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(signupQuery.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+	signupQuery.Password = string(hashedPassword)
+	return nil
+}
+
+func commitSignup(db *sql.DB) error {
+
+	_, err := db.Exec("CALL client_login(?,?)")
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func ConnectForSignup(signupQuery SignupData) {
@@ -25,6 +46,8 @@ func ConnectForSignup(signupQuery SignupData) {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	fmt.Println("Connected to the database!")
-	fmt.Println()
+	err = hashPassword(&signupQuery)
+	fmt.Println(signupQuery.Password)
 }
