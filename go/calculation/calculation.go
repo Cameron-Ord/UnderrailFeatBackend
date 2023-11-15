@@ -24,13 +24,12 @@ type RequestData struct {
 	Skills []Skill `json:"skills"`
 }
 
-func checkSkillStat(feats []map[string]string, data RequestData) ([]string, error) {
+func checkSkillStat(feats []map[string]string, data RequestData, allAllocatedFeats *[]string) error {
 	fmt.Println(" ")
 	fmt.Println("////////////////////////")
 	fmt.Println("Checking skills and stats...")
 	fmt.Println("////////////////////////")
 	fmt.Println(" ")
-	var StatSkillFeats = []string{}
 
 	for i := 0; i < len(feats); i++ {
 		feat := feats[i]
@@ -48,11 +47,11 @@ func checkSkillStat(feats []map[string]string, data RequestData) ([]string, erro
 				var featRequirement string = requirement
 				statRequirement, err := convertToInt(featRequirement)
 				if err != nil {
-					return nil, err
+					return err
 				}
 				givenStatValue, err := convertToInt(statValue)
 				if err != nil {
-					return nil, err
+					return err
 				}
 				if givenStatValue >= statRequirement {
 					statsMet = append(statsMet, statName)
@@ -102,11 +101,11 @@ func checkSkillStat(feats []map[string]string, data RequestData) ([]string, erro
 						var featRequirement string = requirement
 						skillRequirement, err := convertToInt(featRequirement)
 						if err != nil {
-							return nil, err
+							return err
 						}
 						givenSkillValue, err := convertToInt(skillValue)
 						if err != nil {
-							return nil, err
+							return err
 						}
 						if givenSkillValue >= skillRequirement {
 							skillsMet = append(skillsMet, skillName)
@@ -161,7 +160,7 @@ func checkSkillStat(feats []map[string]string, data RequestData) ([]string, erro
 
 					}
 					if noFails {
-						StatSkillFeats = append(StatSkillFeats, feat["Feat"])
+						*allAllocatedFeats = append(*allAllocatedFeats, feat["Feat"])
 						fmt.Println("-----------------------------")
 						fmt.Println("SKILL/STAT = {MET}", feat["Feat"], "Appended at iteration:", "->", i, "noFails:", noFails)
 						fmt.Println("-----------------------------")
@@ -170,16 +169,15 @@ func checkSkillStat(feats []map[string]string, data RequestData) ([]string, erro
 			}
 		}
 	}
-	return StatSkillFeats, nil
+	return nil
 }
 
-func checkStat(feats []map[string]string, data RequestData) ([]string, error) {
+func checkStat(feats []map[string]string, data RequestData, allAllocatedFeats *[]string) error {
 	fmt.Println(" ")
 	fmt.Println("////////////////////////")
 	fmt.Println("Checking stats...")
 	fmt.Println("////////////////////////")
 	fmt.Println(" ")
-	var StatFeats = []string{}
 
 	for i := 0; i < len(feats); i++ {
 		feat := feats[i]
@@ -196,12 +194,12 @@ func checkStat(feats []map[string]string, data RequestData) ([]string, error) {
 				statRequirement, err := convertToInt(featRequirement)
 				if err != nil {
 
-					return nil, err
+					return err
 				}
 				givenStatValue, err := convertToInt(statValue)
 				if err != nil {
 
-					return nil, err
+					return err
 				}
 				if givenStatValue >= statRequirement {
 					statsMet = append(statsMet, statName)
@@ -237,13 +235,13 @@ func checkStat(feats []map[string]string, data RequestData) ([]string, error) {
 			}
 			if noFails == true {
 				if !hasSkillRequirement {
-					StatFeats = append(StatFeats, feat["Feat"])
+					*allAllocatedFeats = append(*allAllocatedFeats, feat["Feat"])
 					fmt.Println("STAT = {MET}:", feat["Feat"], "Appended at iteration:", "->", i, "noFails:", noFails, "hasSkillRequirement:", hasSkillRequirement)
 				}
 			}
 		}
 	}
-	return StatFeats, nil
+	return nil
 }
 
 func convertToInt(givenNumStr string) (int, error) {
@@ -251,13 +249,13 @@ func convertToInt(givenNumStr string) (int, error) {
 	return NumToInt, err
 }
 
-func checkSkill(feats []map[string]string, data RequestData) ([]string, error) {
+func checkSkill(feats []map[string]string, data RequestData, allAllocatedFeats *[]string) error {
 	fmt.Println(" ")
 	fmt.Println("////////////////////////")
 	fmt.Println("Checking skills...")
 	fmt.Println("////////////////////////")
 	fmt.Println(" ")
-	var SkillFeats = []string{}
+
 	//looping for the length of the feats map
 	for i := 0; i < len(feats); i++ {
 		//assigning individual feat by index
@@ -279,12 +277,12 @@ func checkSkill(feats []map[string]string, data RequestData) ([]string, error) {
 				//runs the conversion function and assigns returned values
 				skillRequirement, err := convertToInt(featRequirement)
 				if err != nil {
-					return nil, err
+					return err
 				}
 				//runs the conversion function and assigns returned values
 				givenSkillValue, err := convertToInt(skillValue)
 				if err != nil {
-					return nil, err
+					return err
 				}
 				//performs the checks, assigns to a respective slice depending on the outcome
 				if givenSkillValue >= skillRequirement {
@@ -365,14 +363,14 @@ func checkSkill(feats []map[string]string, data RequestData) ([]string, error) {
 				}
 				//finally, if there are no fails for this iteration of Feats, it will append the feat
 				if noFails {
-					SkillFeats = append(SkillFeats, feat["Feat"])
+					*allAllocatedFeats = append(*allAllocatedFeats, feat["Feat"])
 					fmt.Println("SKILL = {MET}", feat["Feat"], "Appended at iteration:", "->", i, "hasStatRequirement:", hasStatRequirement)
 				}
 			}
 		}
 	}
 	//returning the populated slice
-	return SkillFeats, nil
+	return nil
 }
 
 func unloadJson() []map[string]string {
@@ -401,7 +399,8 @@ func marshalData(sentSlice []string) ([]byte, error) {
 }
 
 func PrepareData(data RequestData) ([]byte, error) {
-
+	var allAllocatedFeats []string
+	var err error
 	// init the calculation
 	fmt.Println(" ")
 	fmt.Println("////////////////////////")
@@ -413,24 +412,22 @@ func PrepareData(data RequestData) ([]byte, error) {
 	//assigning the data with a return function
 	feats = unloadJson()
 	//checking feats that require only skills
-	SkillFeats, err := checkSkill(feats, data)
+
+	err = checkSkill(feats, data, &allAllocatedFeats)
 	if err != nil {
 		return nil, err
 	}
 	//checking feats that require only stats
-	StatFeats, err := checkStat(feats, data)
+	err = checkStat(feats, data, &allAllocatedFeats)
 	if err != nil {
 		return nil, err
 	}
 	//checking feats that require stats and skills only
-	StatSkillFeats, err := checkSkillStat(feats, data)
+	err = checkSkillStat(feats, data, &allAllocatedFeats)
 	if err != nil {
 		return nil, err
 	}
 	//gathering all the feats that got assigned from each check into a single slice
-	var allAllocatedFeats []string
-	allAllocatedFeats = append(StatFeats, SkillFeats...)
-	allAllocatedFeats = append(allAllocatedFeats, StatSkillFeats...)
 	//marshalling the data to JSON format using a return function
 	jsonData, err := marshalData(allAllocatedFeats)
 	if err != nil {
