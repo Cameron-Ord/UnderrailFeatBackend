@@ -9,6 +9,7 @@ import (
 	"os"
 )
 
+// directing the unmarshalling and allocation of the data sent from the frontend
 type Stat struct {
 	StatName  string `json:"statName"`
 	StatValue string `json:"statValue"`
@@ -30,29 +31,39 @@ func checkSkillStat(feats []map[string]string, data RequestData, allAllocatedFea
 	fmt.Println("Checking skills and stats...")
 	fmt.Println("////////////////////////")
 	fmt.Println(" ")
-
+	//looping through the len of the feats map
 	for i := 0; i < len(feats); i++ {
+		//assigning each index to a variable
 		feat := feats[i]
+		//declaring variables at the beginning of the iteration
 		var hasSkillRequirement = false
 		var noFails bool = true
 		var statsMet = []string{}
 		var statsFailed = []string{}
 		var skillsMet = []string{}
 		var skillsFailed = []string{}
+		//for loop for Stats
 		for j := 0; j < len(data.Stats); j++ {
+			//assigning the current index of Stats to a variable
 			stat := data.Stats[j]
+			//copying the StatName and StatValue over to their own variables
 			var statName string = stat.StatName
 			var statValue string = stat.StatValue
+			//if this iteration of Feats(i) has the current iteration of Stats(j) ok gets set to true and the code gets executed
 			if requirement, ok := feat[statName]; ok {
+				//copying requirement over to a variable
 				var featRequirement string = requirement
+				//sending the copied variable over to the convert to int function
 				statRequirement, err := convertToInt(featRequirement)
 				if err != nil {
 					return err
 				}
+				//sending the current iteration of Stats(j) to the convert to int function
 				givenStatValue, err := convertToInt(statValue)
 				if err != nil {
 					return err
 				}
+				//performing checks
 				if givenStatValue >= statRequirement {
 					statsMet = append(statsMet, statName)
 				} else if givenStatValue < statRequirement {
@@ -60,18 +71,22 @@ func checkSkillStat(feats []map[string]string, data RequestData, allAllocatedFea
 				}
 			}
 		}
+
+		//if the statsMet slice is populated for this iteration
 		if len(statsMet) > 0 {
+			//using a similar check to earlier to simply check whether any stats are found within the current index of Feats
 			for k := 0; k < len(data.Skills); k++ {
 				skill := data.Skills[k]
 				var skillName string = skill.SkillName
 				if _, ok := feat[skillName]; ok {
+					//setting to true and breaking if a stat is found
 					hasSkillRequirement = true
 					break
 				} else {
 					hasSkillRequirement = false
 				}
 			}
-
+			//if there are stats failed, performs a basic check to determine whether every stat is a required
 			if len(statsFailed) > 0 {
 				for _, statfail := range statsFailed {
 					fmt.Println("-----------------------------")
@@ -91,8 +106,9 @@ func checkSkillStat(feats []map[string]string, data RequestData, allAllocatedFea
 					}
 				}
 			}
-
-			if hasSkillRequirement && noFails {
+			//if noFails is still true and there is a skill requirement
+			if noFails && hasSkillRequirement {
+				//doing the same as before, but for the skills
 				for l := 0; l < len(data.Skills); l++ {
 					skill := data.Skills[l]
 					var skillName string = skill.SkillName
@@ -114,8 +130,16 @@ func checkSkillStat(feats []map[string]string, data RequestData, allAllocatedFea
 						}
 					}
 				}
-
+				//if the skillsMet slice is populated
 				if len(skillsMet) > 0 {
+					/*
+						using a range loop to go through skillsMet
+						the purpose of this is to make sure that in the case a feat has a hardrequirement,
+						it will ensure that the other skills that are associated with it didn't get left out.
+						Otherwise, with the following code, since the hardrequirement is literally required and all other skills aren't(You just need atleast one),
+						it will return the feat despite none of the other skills associated with the feat being present
+						So this is just a simple check in that case, if ok gets assigned false here it will just skip the block entirely
+					*/
 					if hardreq, ok := feat["HardRequirement"]; ok {
 						for _, skillmet := range skillsMet {
 							if skillmet != hardreq {
@@ -131,35 +155,46 @@ func checkSkillStat(feats []map[string]string, data RequestData, allAllocatedFea
 					} else {
 						noFails = true
 					}
-
+					//if noFails is still true, and skillsFailed is populated
 					if noFails && len(skillsFailed) > 0 {
+						//looping through the skillsFailed slice
 						for _, failed := range skillsFailed {
 							fmt.Println("-----------------------------")
 							fmt.Println("SKILL = {FAILED}:", "({"+failed, "->", "at iteration}):", i, "||", "{Feat}:", "({"+feat["Feat"], "->", "needs}):", feat[failed], failed)
 							fmt.Println("-----------------------------")
+							//checking whether all skills are required
 							if skillrequire, ok := feat["NeedsAllSkills"]; ok {
+								//if every skill isnt required to meet specifications,
+								//then it begins checking for hardrequirements
 								if skillrequire == "false" {
+									//if the failed skill matches the hardrequirement, ok will be set to true and the block will execute
 									if requirement, ok := feat["HardRequirement"]; ok && requirement == failed {
+										//no fails gets set to false
 										noFails = false
 										fmt.Println(" ")
 										fmt.Println("{Failed break}:", "->", feat["Feat"])
 										fmt.Println(" ")
+										//loop breaks as a point of failure is found for this iteration of Feats
 										break
 									} else {
 										noFails = true
 									}
+									//if all skills are required, then we've failed pretty quick
 								} else if skillrequire == "true" {
 									noFails = false
 									fmt.Println(" ")
 									fmt.Println("{Failed break}:", "->", feat["Feat"])
 									fmt.Println(" ")
+									//loop breaks as a point of failure is found for this iteration of Feats
 									break
 								}
 							}
 						}
 
 					}
+					//if noFails is true
 					if noFails {
+						//we append the feat to the corresponding slice.
 						*allAllocatedFeats = append(*allAllocatedFeats, feat["Feat"])
 						fmt.Println("-----------------------------")
 						fmt.Println("SKILL/STAT = {MET}", feat["Feat"], "Appended at iteration:", "->", i, "noFails:", noFails)
@@ -249,7 +284,7 @@ func checkStat(feats []map[string]string, data RequestData, allAllocatedFeats *[
 							noFails = false
 							break
 						} else if required == "false" {
-							//otherwise, we continue on
+							//otherwise, continue on
 							noFails = true
 						}
 					}
@@ -267,6 +302,7 @@ func checkStat(feats []map[string]string, data RequestData, allAllocatedFeats *[
 }
 
 func convertToInt(givenNumStr string) (int, error) {
+	//string to int conversion
 	NumToInt, err := strconv.Atoi(givenNumStr)
 	return NumToInt, err
 }
