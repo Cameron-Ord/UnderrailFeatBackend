@@ -178,29 +178,40 @@ func checkStat(feats []map[string]string, data RequestData, allAllocatedFeats *[
 	fmt.Println("Checking stats...")
 	fmt.Println("////////////////////////")
 	fmt.Println(" ")
-
+	//looping using the length of the feats map
 	for i := 0; i < len(feats); i++ {
+		//assigning each index of the feat map to a variable
 		feat := feats[i]
+		//declaring variables
 		var hasSkillRequirement bool = false
 		var noFails bool = true
 		var statsMet = []string{}
 		var statsFailed = []string{}
+		//looping through the length of the Stats slice (sent from frontend)
 		for j := 0; j < len(data.Stats); j++ {
+			//assigning each index of the Stats slice to a variable
 			stat := data.Stats[j]
+			//copying over the statName to its own variable
 			var statName string = stat.StatName
+			//doing the same, but with the value of the stat received front the frontend
 			var statValue string = stat.StatValue
+			//if ok = true, this index of feats contains the statName(data.Stats contains every stat so by looping it, this if check is being checked until every stat has been thrown at it)
 			if requirement, ok := feat[statName]; ok {
+				//assigning the value of the stat requirement listed in the feat variable
 				var featRequirement string = requirement
+				//performing a string to int conversion of the value
 				statRequirement, err := convertToInt(featRequirement)
 				if err != nil {
 
 					return err
 				}
+				//performing a string to int conversion of the value assigned at the start of the loop
 				givenStatValue, err := convertToInt(statValue)
 				if err != nil {
 
 					return err
 				}
+				//performing some simple checks
 				if givenStatValue >= statRequirement {
 					statsMet = append(statsMet, statName)
 				} else if givenStatValue < statRequirement {
@@ -208,39 +219,50 @@ func checkStat(feats []map[string]string, data RequestData, allAllocatedFeats *[
 				}
 			}
 		}
+		/*if the statsMet slice is populated in this iteration
+		start looping through the Skills slice to check for existing skill requirements
+		for this index of feats. The exact same as the if check from before, really.
+		*/
 
 		if len(statsMet) > 0 {
 			for k := 0; k < len(data.Skills); k++ {
 				skill := data.Skills[k]
 				var skillName string = skill.SkillName
 				if _, ok := feat[skillName]; ok {
+					//if the skillname of is found in the current index of feats, breaks the loop to prevent further checking as it is no longer necessary
+					//hasSkillRequirement is set to true
 					hasSkillRequirement = true
 					break
 				} else {
 					hasSkillRequirement = false
 				}
 			}
-			if len(statsFailed) > 0 {
+			// if the statsFailed slice is populated and there is no skill requirement
+			if len(statsFailed) > 0 && !hasSkillRequirement {
+				//range looping the statsFailed slice
 				for _, failed := range statsFailed {
 					fmt.Println("STAT = {FAILED}:", "({"+failed, "->", "at iteration}):", i, "||", "{Feat}:", "({"+feat["Feat"], "->", "needs}):", feat[failed], failed)
+					//checking if every stat is required for the skill to be obtainable
 					if required, ok := feat["NeedsAllStats"]; ok {
 						if required == "true" {
+							//if every skill listed in the feat is required, breaks and sets noFails to false
 							noFails = false
 							break
 						} else if required == "false" {
+							//otherwise, we continue on
 							noFails = true
 						}
 					}
 				}
 			}
+			//finally, if there are no fails, we append the feat to the allAllocatedFeats slice using a ptr.
 			if noFails == true {
-				if !hasSkillRequirement {
-					*allAllocatedFeats = append(*allAllocatedFeats, feat["Feat"])
-					fmt.Println("STAT = {MET}:", feat["Feat"], "Appended at iteration:", "->", i, "noFails:", noFails, "hasSkillRequirement:", hasSkillRequirement)
-				}
+				*allAllocatedFeats = append(*allAllocatedFeats, feat["Feat"])
+				fmt.Println("STAT = {MET}:", feat["Feat"], "Appended at iteration:", "->", i, "noFails:", noFails, "hasSkillRequirement:", hasSkillRequirement)
 			}
 		}
 	}
+	//returning nil, as the function reached the end without errors.
 	return nil
 }
 
