@@ -391,7 +391,7 @@ func checkSkill(feats []map[string]string, data RequestData, allAllocatedFeats *
 			}
 		}
 	}
-	//returning the populated slice
+	//returning nil at the end of the function, as no error was raised
 	return nil
 }
 
