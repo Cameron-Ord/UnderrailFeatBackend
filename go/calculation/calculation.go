@@ -291,7 +291,7 @@ func checkStat(feats []map[string]string, data RequestData, allAllocatedFeats *[
 				}
 			}
 			//finally, if there are no fails, we append the feat to the allAllocatedFeats slice using a ptr.
-			if noFails == true {
+			if noFails == true && !hasSkillRequirement {
 				*allAllocatedFeats = append(*allAllocatedFeats, feat["Feat"])
 				fmt.Println("STAT = {MET}:", feat["Feat"], "Appended at iteration:", "->", i, "noFails:", noFails, "hasSkillRequirement:", hasSkillRequirement)
 			}
