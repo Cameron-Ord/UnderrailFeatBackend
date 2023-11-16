@@ -22,8 +22,23 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 	case "get-user-builds":
 
-	case "save-build":
-
+	case "savebuild":
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "POST")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		body, err := io.ReadAll(r.Body)
+		if err != nil {
+			http.Error(w, "Error reading request", http.StatusBadRequest)
+			return
+		}
+		var saveData db.SaveData
+		if err := json.Unmarshal(body, &saveData); err != nil {
+			http.Error(w, "Error decoding JSON data", http.StatusBadRequest)
+			return
+		}
+		db.SaveBuild(saveData)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
 	case "signup":
 
 		w.Header().Set("Access-Control-Allow-Origin", "*")
