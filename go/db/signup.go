@@ -24,9 +24,9 @@ func hashPassword(signupQuery *SignupData) error {
 	return nil
 }
 
-func commitSignup(db *sql.DB) error {
+func commitSignup(db *sql.DB, username string, password string) error {
 
-	_, err := db.Exec("CALL client_login(?,?)")
+	_, err := db.Exec("CALL client_signup(?,?)", username, password)
 	if err != nil {
 		return err
 	}
@@ -49,5 +49,6 @@ func ConnectForSignup(signupQuery SignupData) {
 
 	fmt.Println("Connected to the database!")
 	err = hashPassword(&signupQuery)
+	err = commitSignup(dbConn, signupQuery.Username, signupQuery.Password)
 	fmt.Println(signupQuery.Password)
 }
