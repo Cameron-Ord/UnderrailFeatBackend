@@ -1,6 +1,12 @@
 package db
 
-import "fmt"
+import (
+	"database/sql"
+	"fmt"
+	"log"
+
+	_ "github.com/go-sql-driver/mysql"
+)
 
 type Stat struct {
 	StatName  string `json:"statName"`
@@ -22,9 +28,22 @@ type SaveData struct {
 	Feats  []Feat  `json:"feats"`
 }
 
+func saveBuildData(db *sql.DB) error {
+
+}
+
 func SaveBuild(build SaveData) {
-	for i := 0; i < len(build.Feats); i++ {
-		feat := build.Feats[i]
-		fmt.Println(feat.FeatName)
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", DBUsername, DBPassword, DBHost, DBPort, DBName)
+	dbConn, err := sql.Open("mysql", dsn)
+	if err != nil {
+		log.Fatal(err)
 	}
+	defer dbConn.Close()
+
+	err = dbConn.Ping()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("Connected to the database!")
+	err = saveBuildData(dbConn)
 }

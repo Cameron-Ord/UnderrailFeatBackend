@@ -22,6 +22,7 @@ var token_db string
 
 func comparePWHash(hashed_password string, loginQuery LoginData) error {
 	err := bcrypt.CompareHashAndPassword([]byte(hashed_password), []byte(loginQuery.Password))
+	fmt.Println("Password -> Match")
 	if err != nil {
 		return err
 	}
