@@ -4,12 +4,13 @@ import (
 	"crypto/rand"
 	"database/sql"
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"log"
-
-	"golang.org/x/crypto/bcrypt"
+	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type LoginData struct {
@@ -22,10 +23,10 @@ var token_db string
 
 func comparePWHash(hashed_password string, loginQuery LoginData) error {
 	err := bcrypt.CompareHashAndPassword([]byte(hashed_password), []byte(loginQuery.Password))
-	fmt.Println("Password -> Match")
 	if err != nil {
 		return err
 	}
+	fmt.Println("Password -> Match")
 	return nil
 }
 
@@ -46,16 +47,19 @@ func checkPassword(db *sql.DB, loginQuery LoginData) error {
 	}
 	err = rows.Err()
 	if err != nil {
+		fmt.Println(err, "rows error")
 		return err
 	}
 
 	err = comparePWHash(hashed_password, loginQuery)
 	if err != nil {
+		fmt.Println(err, "compare error")
 		return err
 	}
 
 	err = hashLoginPassword(&loginQuery)
 	if err != nil {
+		fmt.Println(err, "hashing error")
 		return err
 	}
 	err = commitLogin(db, loginQuery.Username, loginQuery.Password)
@@ -76,7 +80,7 @@ func generateToken(length int) (string, error) {
 }
 
 func commitLogin(db *sql.DB, username string, password string) error {
-
+	fmt.Println("Commiting login..")
 	tokenLength := 16
 	token, err := generateToken(tokenLength)
 	if err != nil {
@@ -98,13 +102,11 @@ func commitLogin(db *sql.DB, username string, password string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println(client_id)
-	fmt.Println(token_db)
 	return nil
 }
 
 func hashLoginPassword(loginQuery *LoginData) error {
-
+	fmt.Println("hashing..")
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(loginQuery.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return err
@@ -113,7 +115,15 @@ func hashLoginPassword(loginQuery *LoginData) error {
 	return nil
 }
 
-func ConnectForLogin(loginQuery LoginData) {
+func marshall_session(session_map map[string]string) ([]byte, error) {
+	json, err := json.Marshal(session_map)
+	if err != nil {
+		return nil, err
+	}
+	return json, nil
+}
+
+func ConnectForLogin(loginQuery LoginData) ([]byte, error) {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", DBUsername, DBPassword, DBHost, DBPort, DBName)
 	dbConn, err := sql.Open("mysql", dsn)
 	if err != nil {
@@ -127,4 +137,17 @@ func ConnectForLogin(loginQuery LoginData) {
 	}
 	fmt.Println("Connected to the database!")
 	err = checkPassword(dbConn, loginQuery)
+	if err != nil {
+		return nil, err
+	}
+	session_map := make(map[string]string)
+
+	session_map["client_id"] = strconv.Itoa(client_id)
+	session_map["session_token"] = token_db
+
+	session_json, errjson := marshall_session(session_map)
+	if errjson != nil {
+		return nil, errjson
+	}
+	return session_json, nil
 }

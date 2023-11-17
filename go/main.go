@@ -77,9 +77,15 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Error decoding JSON data", http.StatusBadRequest)
 			return
 		}
-		db.ConnectForLogin(loginQuery)
+		fmt.Println(loginQuery.Username)
+		fmt.Println(loginQuery.Password)
+		session_data, err := db.ConnectForLogin(loginQuery)
+		if err != nil {
+			http.Error(w, "Error during login", http.StatusUnauthorized)
+		}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
+		w.Write(session_data)
 
 	case "calculate":
 		//setting cors headers

@@ -23,13 +23,16 @@ type Feat struct {
 }
 
 type SaveData struct {
-	Stats  []Stat  `json:"stats"`
-	Skills []Skill `json:"skills"`
-	Feats  []Feat  `json:"feats"`
+	Stats     []Stat  `json:"stats"`
+	Skills    []Skill `json:"skills"`
+	Feats     []Feat  `json:"feats"`
+	Title     string  `json:"title"`
+	Client_ID string  `json:"client_id"`
 }
 
-func saveBuildData(db *sql.DB) error {
+func saveBuildTitle(db *sql.DB, build *SaveData) error {
 
+	return nil
 }
 
 func SaveBuild(build SaveData) {
@@ -45,5 +48,7 @@ func SaveBuild(build SaveData) {
 		log.Fatal(err)
 	}
 	fmt.Println("Connected to the database!")
-	err = saveBuildData(dbConn)
+	fmt.Println(build.Client_ID)
+	err = saveBuildTitle(dbConn, &build)
+
 }
