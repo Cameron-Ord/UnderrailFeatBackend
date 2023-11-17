@@ -17,38 +17,48 @@ type LoginData struct {
 	Password string `json:"password"`
 }
 
+var client_id int
+var token_db string
+
+func comparePWHash(hashed_password string, loginQuery LoginData) error {
+	err := bcrypt.CompareHashAndPassword([]byte(hashed_password), []byte(loginQuery.Password))
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func checkPassword(db *sql.DB, loginQuery LoginData) error {
 	rows, err := db.Query("CALL get_hpw(?)", loginQuery.Username)
 	var hashed_password string
 	if err != nil {
 		return err
-	} else {
-		defer rows.Close()
-		for rows.Next() {
-			var hashedPW string
-			err := rows.Scan(&hashedPW)
-			if err != nil {
-				return err
-			}
-			hashed_password = hashedPW
-		}
-		err = rows.Err()
-		if err != nil {
-			return err
-		}
-		err = bcrypt.CompareHashAndPassword([]byte(hashed_password), []byte(loginQuery.Password))
-		if err != nil {
-			return err
-		} else {
-			fmt.Println("PW match")
-			err = hashLoginPassword(&loginQuery)
-			if err != nil {
-				return err
-			} else {
-				err = commitLogin(db, loginQuery.Username, loginQuery.Password)
-			}
-		}
 	}
+	defer rows.Close()
+	for rows.Next() {
+		var hashedPW string
+		err := rows.Scan(&hashedPW)
+		if err != nil {
+			return err
+		}
+		hashed_password = hashedPW
+	}
+	err = rows.Err()
+	if err != nil {
+		return err
+	}
+
+	err = comparePWHash(hashed_password, loginQuery)
+	if err != nil {
+		return err
+	}
+
+	err = hashLoginPassword(&loginQuery)
+	if err != nil {
+		return err
+	}
+	err = commitLogin(db, loginQuery.Username, loginQuery.Password)
+
 	return nil
 }
 
@@ -66,9 +76,6 @@ func generateToken(length int) (string, error) {
 
 func commitLogin(db *sql.DB, username string, password string) error {
 
-	var client_id_value int
-	var token_value string
-
 	tokenLength := 16
 	token, err := generateToken(tokenLength)
 	if err != nil {
@@ -77,26 +84,21 @@ func commitLogin(db *sql.DB, username string, password string) error {
 	rows, err := db.Query("CALL client_login(?,?,?)", username, password, token)
 	if err != nil {
 		return err
-	} else {
-		defer rows.Close()
-		for rows.Next() {
-			var client_id int
-			var token string
-			err = rows.Scan(&client_id, &token)
-			if err != nil {
-				return err
-			} else {
-				client_id_value = client_id
-				token_value = token
-			}
-		}
-		err = rows.Err()
+	}
+
+	defer rows.Close()
+	for rows.Next() {
+		err = rows.Scan(&client_id, &token_db)
 		if err != nil {
 			return err
 		}
-		fmt.Println(client_id_value)
-		fmt.Println(token_value)
 	}
+	err = rows.Err()
+	if err != nil {
+		return err
+	}
+	fmt.Println(client_id)
+	fmt.Println(token_db)
 	return nil
 }
 
