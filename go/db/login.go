@@ -21,6 +21,35 @@ type LoginData struct {
 var client_id int
 var token_db string
 
+func ConnectForLogin(loginQuery LoginData) ([]byte, error) {
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", DBUsername, DBPassword, DBHost, DBPort, DBName)
+	dbConn, err := sql.Open("mysql", dsn)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer dbConn.Close()
+
+	err = dbConn.Ping()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("Connected to the database!")
+	err = checkPassword(dbConn, loginQuery)
+	if err != nil {
+		return nil, err
+	}
+	session_map := make(map[string]string)
+
+	session_map["client_id"] = strconv.Itoa(client_id)
+	session_map["session_token"] = token_db
+
+	session_json, errjson := marshall_session(session_map)
+	if errjson != nil {
+		return nil, errjson
+	}
+	return session_json, nil
+}
+
 func comparePWHash(hashed_password string, loginQuery LoginData) error {
 	err := bcrypt.CompareHashAndPassword([]byte(hashed_password), []byte(loginQuery.Password))
 	if err != nil {
@@ -121,33 +150,4 @@ func marshall_session(session_map map[string]string) ([]byte, error) {
 		return nil, err
 	}
 	return json, nil
-}
-
-func ConnectForLogin(loginQuery LoginData) ([]byte, error) {
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", DBUsername, DBPassword, DBHost, DBPort, DBName)
-	dbConn, err := sql.Open("mysql", dsn)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer dbConn.Close()
-
-	err = dbConn.Ping()
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println("Connected to the database!")
-	err = checkPassword(dbConn, loginQuery)
-	if err != nil {
-		return nil, err
-	}
-	session_map := make(map[string]string)
-
-	session_map["client_id"] = strconv.Itoa(client_id)
-	session_map["session_token"] = token_db
-
-	session_json, errjson := marshall_session(session_map)
-	if errjson != nil {
-		return nil, errjson
-	}
-	return session_json, nil
 }

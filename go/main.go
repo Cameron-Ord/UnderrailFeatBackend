@@ -12,6 +12,24 @@ import (
 	"github.com/gorilla/mux"
 )
 
+func main() {
+	// setting the router to handle paths
+	r := mux.NewRouter()
+	//sends the /api/endpoint to the handler
+	r.HandleFunc("/api/{endpoint}", handler).Methods("POST", "GET", "DELETE", "UPDATE")
+	//setting cors, currently set with wildcard for testing
+	corsHandler := handlers.CORS(
+		handlers.AllowedOrigins([]string{"*"}),
+		handlers.AllowedMethods([]string{"POST", "GET", "DELETE", "UPDATE"}),
+		handlers.AllowedHeaders([]string{"Content-Type"}),
+	)
+	http.Handle("/", corsHandler(r))
+	//listening on the set port
+	port := "6969"
+	fmt.Printf("Server is running on http://localhost:%s\n", port)
+	http.ListenAndServe(":"+port, nil)
+}
+
 func handler(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
@@ -126,22 +144,4 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	default:
 		http.Error(w, "Invalid endpoint", http.StatusNotFound)
 	}
-}
-
-func main() {
-	// setting the router to handle paths
-	r := mux.NewRouter()
-	//sends the /api/endpoint to the handler
-	r.HandleFunc("/api/{endpoint}", handler).Methods("POST", "GET", "DELETE", "UPDATE")
-	//setting cors, currently set with wildcard for testing
-	corsHandler := handlers.CORS(
-		handlers.AllowedOrigins([]string{"*"}),
-		handlers.AllowedMethods([]string{"POST", "GET", "DELETE", "UPDATE"}),
-		handlers.AllowedHeaders([]string{"Content-Type"}),
-	)
-	http.Handle("/", corsHandler(r))
-	//listening on the set port
-	port := "6969"
-	fmt.Printf("Server is running on http://localhost:%s\n", port)
-	http.ListenAndServe(":"+port, nil)
 }

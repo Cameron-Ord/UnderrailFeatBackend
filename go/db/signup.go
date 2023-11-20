@@ -14,6 +14,25 @@ type SignupData struct {
 	Password string `json:"password"`
 }
 
+func ConnectForSignup(signupQuery SignupData) {
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", DBUsername, DBPassword, DBHost, DBPort, DBName)
+	dbConn, err := sql.Open("mysql", dsn)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer dbConn.Close()
+
+	err = dbConn.Ping()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("Connected to the database!")
+	err = hashPassword(&signupQuery)
+	err = commitSignup(dbConn, signupQuery.Username, signupQuery.Password)
+	fmt.Println(signupQuery.Password)
+}
+
 func hashPassword(signupQuery *SignupData) error {
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(signupQuery.Password), bcrypt.DefaultCost)
@@ -32,23 +51,4 @@ func commitSignup(db *sql.DB, username string, password string) error {
 	}
 
 	return nil
-}
-
-func ConnectForSignup(signupQuery SignupData) {
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", DBUsername, DBPassword, DBHost, DBPort, DBName)
-	dbConn, err := sql.Open("mysql", dsn)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer dbConn.Close()
-
-	err = dbConn.Ping()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println("Connected to the database!")
-	err = hashPassword(&signupQuery)
-	err = commitSignup(dbConn, signupQuery.Username, signupQuery.Password)
-	fmt.Println(signupQuery.Password)
 }

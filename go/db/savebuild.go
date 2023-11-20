@@ -30,11 +30,6 @@ type SaveData struct {
 	Client_ID string  `json:"client_id"`
 }
 
-func saveBuildTitle(db *sql.DB, build *SaveData) error {
-
-	return nil
-}
-
 func SaveBuild(build SaveData) {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", DBUsername, DBPassword, DBHost, DBPort, DBName)
 	dbConn, err := sql.Open("mysql", dsn)
@@ -50,5 +45,9 @@ func SaveBuild(build SaveData) {
 	fmt.Println("Connected to the database!")
 	fmt.Println(build.Client_ID)
 	err = saveBuildTitle(dbConn, &build)
+}
 
+func saveBuildTitle(db *sql.DB, build *SaveData) error {
+
+	return nil
 }
