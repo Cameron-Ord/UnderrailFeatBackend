@@ -41,14 +41,12 @@ START OF FILE:
 func PrepareData(data RequestData) ([]byte, error) {
 	var allAllocatedFeats []string
 	var err error
-
+	var feats []map[string]string
 	fmt.Println(" ")
 	fmt.Println("////////////////////////")
 	fmt.Println("Starting calculation..")
 	fmt.Println("////////////////////////")
 	fmt.Println(" ")
-
-	var feats []map[string]string
 
 	feats = unloadJson()
 
@@ -125,7 +123,7 @@ func convertToInt(givenNumStr string) (int, error) {
 	return NumToInt, err
 }
 
-func performCheck(metPtr *[]string, failedPtr *[]string, requirement string, name, value string) error {
+func performCheck(metPtr *[]string, failedPtr *[]string, requirement string, name string, value string) error {
 	skillRequirement, err := convertToInt(requirement)
 	if err != nil {
 		return err
@@ -206,12 +204,12 @@ func checkSkill(feats []map[string]string, data RequestData, allAllocatedFeats *
 							noFails = true
 							break
 						} else {
+							fmt.Println("Hardreq only->", feat["HardRequirement"], "{SKIPPED}")
 							noFails = false
 						}
 					}
 					//skips the block entirely if ok is false
 				} else {
-					fmt.Println("Hardreq -> {SKIPPED}")
 					noFails = true
 				}
 				//if noFails is still true and the skillsFailed slice is populated..
@@ -383,15 +381,10 @@ func checkSkillStat(feats []map[string]string, data RequestData, allAllocatedFea
 			//if there are stats failed, performs a basic check to determine whether every stat is a required
 			if len(statsFailed) > 0 {
 				for _, statfail := range statsFailed {
-					fmt.Println("-----------------------------")
 					fmt.Println("SKILL/STAT = {FAILED}:", "({"+statfail, "->", "at iteration}):", i, "||", "{Feat}:", "({"+feat["Feat"], "->", "needs}):", feat[statfail], statfail)
-					fmt.Println("-----------------------------")
-
 					if statrequire, ok := feat["NeedsAllStats"]; ok {
 						if statrequire == "true" {
-							fmt.Println(" ")
 							fmt.Println(feat["Feat"], "{FAILED AT STATREQUIRE}:", "Cause ->", statfail)
-							fmt.Println(" ")
 							noFails = false
 							break
 						} else if statrequire == "false" {
@@ -427,12 +420,11 @@ func checkSkillStat(feats []map[string]string, data RequestData, allAllocatedFea
 					if hardreq, ok := feat["HardRequirement"]; ok {
 						for _, skillmet := range skillsMet {
 							if skillmet != hardreq {
-								fmt.Println(" ")
 								fmt.Println("{Breaking at hardreq check}:", "->", feat["Feat"])
-								fmt.Println(" ")
 								noFails = true
 								break
 							} else {
+								fmt.Println("Hardreq only->", feat["HardRequirement"], "{SKIPPED}")
 								noFails = false
 							}
 						}
@@ -443,9 +435,7 @@ func checkSkillStat(feats []map[string]string, data RequestData, allAllocatedFea
 					if noFails && len(skillsFailed) > 0 {
 						//looping through the skillsFailed slice
 						for _, failed := range skillsFailed {
-							fmt.Println("-----------------------------")
 							fmt.Println("SKILL = {FAILED}:", "({"+failed, "->", "at iteration}):", i, "||", "{Feat}:", "({"+feat["Feat"], "->", "needs}):", feat[failed], failed)
-							fmt.Println("-----------------------------")
 							//checking whether all skills are required
 							if skillrequire, ok := feat["NeedsAllSkills"]; ok {
 								//if every skill isnt required to meet specifications,
@@ -455,9 +445,9 @@ func checkSkillStat(feats []map[string]string, data RequestData, allAllocatedFea
 									if requirement, ok := feat["HardRequirement"]; ok && requirement == failed {
 										//no fails gets set to false
 										noFails = false
-										fmt.Println(" ")
+
 										fmt.Println("{Failed break}:", "->", feat["Feat"])
-										fmt.Println(" ")
+
 										//loop breaks as a point of failure is found for this iteration of Feats
 										break
 									} else {
@@ -466,9 +456,9 @@ func checkSkillStat(feats []map[string]string, data RequestData, allAllocatedFea
 									//if all skills are required, then we've failed pretty quick
 								} else if skillrequire == "true" {
 									noFails = false
-									fmt.Println(" ")
+
 									fmt.Println("{Failed break}:", "->", feat["Feat"])
-									fmt.Println(" ")
+
 									//loop breaks as a point of failure is found for this iteration of Feats
 									break
 								}
@@ -480,9 +470,7 @@ func checkSkillStat(feats []map[string]string, data RequestData, allAllocatedFea
 					if noFails {
 						//we append the feat to the corresponding slice.
 						*allAllocatedFeats = append(*allAllocatedFeats, feat["Feat"])
-						fmt.Println("-----------------------------")
 						fmt.Println("SKILL/STAT = {MET}", feat["Feat"], "Appended at iteration:", "->", i, "noFails:", noFails)
-						fmt.Println("-----------------------------")
 					}
 				}
 			}
