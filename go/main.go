@@ -54,7 +54,11 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Error decoding JSON data", http.StatusBadRequest)
 			return
 		}
-		db.SaveBuild(saveData)
+		err = db.SaveBuild(saveData)
+		if err != nil {
+			http.Error(w, "Error decoding JSON data", http.StatusInternalServerError)
+			return
+		}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 	case "signup":
