@@ -259,7 +259,7 @@ UNLOCK TABLES;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 DELIMITER ;;
 CREATE DEFINER=`Cameron`@`localhost` PROCEDURE `client_login`(usernameInput varchar(255), passwordInput varchar(255), tokenInput varchar(500))
 BEGIN
@@ -267,9 +267,11 @@ BEGIN
     set clientId = (select id from client where username=usernameInput);
     if clientId is not null and passwordInput is not null then
       delete from client_session where client_id = clientId;
-	  insert into client_session (client_id,session_token) values (clientId,tokenInput);
-	  select client_id, convert(session_token using "utf8") as session_token from client_session where client_id = clientId and session_token = tokenInput;
-	commit;
+      if tokenInput is not null then 
+	     insert into client_session (client_id,session_token) values (clientId,tokenInput);
+	     select client_id, convert(session_token using "utf8") as session_token from client_session where client_id = clientId and session_token = tokenInput;
+	     commit;
+	  end if;
 	end if;
 END ;;
 DELIMITER ;
@@ -285,12 +287,12 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 DELIMITER ;;
 CREATE DEFINER=`Cameron`@`localhost` PROCEDURE `client_signup`(usernameInput varchar(255), passwordInput varchar(255))
     MODIFIES SQL DATA
 BEGIN
-	if usernameInput is not null && passwordInput is not null then
+	if usernameInput is not null and passwordInput is not null then
 	insert into client (username, password, created_at)
 	values (usernameInput, passwordInput, now());
 	end if;
@@ -343,7 +345,8 @@ BEGIN
 	       if client_id_checker = client_id_input then
 	          insert into builds (client_id, title) 
 	          values (client_id_input, title_input); 
-	          select LAST_INSERT_ID(); 
+	          select LAST_INSERT_ID();
+	          commit;
 	       end if;
 	    end if;
     end if;	   
@@ -370,6 +373,7 @@ BEGIN
 	declare token_checker varchar(255);
 	declare build_checker int unsigned;
     declare current_stat_id int unsigned;
+    start transaction;
 	if build_id_input is not null THEN
 	   select id into build_checker
 	   from builds 
@@ -393,7 +397,7 @@ BEGIN
 	      end if;
 	  end if;
 	end if;
-	      
+    commit;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -410,4 +414,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-11-21  9:35:34
+-- Dump completed on 2023-11-21 10:14:22
