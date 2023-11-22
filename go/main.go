@@ -41,6 +41,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	case "get-user-builds":
 
 	case "savebuild":
+
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Methods", "POST")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
@@ -56,11 +57,19 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		}
 		err = db.SaveBuild(saveData)
 		if err != nil {
-			http.Error(w, "Error decoding JSON data", http.StatusInternalServerError)
+			fmt.Println("Database error: ", err)
+			http.Error(w, "Error during DB transaction", http.StatusInternalServerError)
 			return
 		}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
+		result := "Build saved successfully"
+		resultjson, err := json.Marshal(result)
+		if err != nil {
+			return
+		}
+		w.Write(resultjson)
+
 	case "signup":
 
 		w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -81,6 +90,15 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		db.ConnectForSignup(signupQuery)
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
+
+		result := "Signup successful"
+
+		signupResult, err := json.Marshal(result)
+		if err != nil {
+			return
+		}
+
+		w.Write(signupResult)
 
 	case "login":
 
@@ -104,6 +122,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		session_data, err := db.ConnectForLogin(loginQuery)
 		if err != nil {
 			http.Error(w, "Error during login", http.StatusUnauthorized)
+			return
 		}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
