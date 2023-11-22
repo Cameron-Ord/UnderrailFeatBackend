@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -29,6 +30,12 @@ type SaveData struct {
 	Title         string  `json:"title"`
 	Client_ID     string  `json:"client_id"`
 	Session_Token string  `json:"session_token"`
+}
+
+func convertToInt(givenNumStr string) (int, error) {
+	//string to int conversion
+	NumToInt, err := strconv.Atoi(givenNumStr)
+	return NumToInt, err
 }
 
 func SaveBuild(build SaveData) error {
@@ -110,9 +117,13 @@ func saveBuildStats(db *sql.DB, build *SaveData) error {
 	query = "CALL save_stats(?,?,?,?,?)"
 	for i := 0; i < len(build.Stats); i++ {
 		stat := build.Stats[i]
-		_, err := db.Exec(query, build_id, stat.StatName, stat.StatValue, build.Session_Token, build.Client_ID)
+		statValueInt, err := convertToInt(stat.StatValue)
 		if err != nil {
-			fmt.Println("Here")
+			return err
+		}
+		fmt.Println("Saving stats")
+		_, err = db.Exec(query, build_id, stat.StatName, statValueInt, build.Session_Token, build.Client_ID)
+		if err != nil {
 			return err
 		}
 	}
@@ -141,7 +152,12 @@ func saveBuildSkills(db *sql.DB, build *SaveData) error {
 	query = "CALL save_skills(?,?,?,?,?)"
 	for i := 0; i < len(build.Skills); i++ {
 		skill := build.Skills[i]
-		_, err := db.Exec(query, build_id, skill.SkillName, skill.SkillValue, build.Session_Token, build.Client_ID)
+		skillValueInt, err := convertToInt(skill.SkillValue)
+		if err != nil {
+			return err
+		}
+		fmt.Println("Saving skills")
+		_, err = db.Exec(query, build_id, skill.SkillName, skillValueInt, build.Session_Token, build.Client_ID)
 		if err != nil {
 			return err
 		}

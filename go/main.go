@@ -45,15 +45,15 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Error reading request", http.StatusBadRequest)
 			return
 		}
-		err = db.ServeBuilds()
+		jsonified_data, err := db.ServeBuilds()
 		if err != nil {
 			fmt.Println(err)
 			http.Error(w, "Error during DB transaction", http.StatusInternalServerError)
 			return
 		}
-
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
+		w.Write(jsonified_data)
 
 	case "get-user-builds":
 
