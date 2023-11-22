@@ -14,7 +14,7 @@ type SignupData struct {
 	Password string `json:"password"`
 }
 
-func ConnectForSignup(signupQuery SignupData) {
+func ConnectForSignup(signupQuery SignupData) error {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", DBUsername, DBPassword, DBHost, DBPort, DBName)
 	dbConn, err := sql.Open("mysql", dsn)
 	if err != nil {
@@ -25,16 +25,22 @@ func ConnectForSignup(signupQuery SignupData) {
 	err = dbConn.Ping()
 	if err != nil {
 		log.Fatal(err)
+		return err
 	}
-
 	fmt.Println("Connected to the database!")
 	err = hashPassword(&signupQuery)
+	if err != nil {
+		return err
+	}
 	err = commitSignup(dbConn, signupQuery.Username, signupQuery.Password)
-	fmt.Println(signupQuery.Password)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func hashPassword(signupQuery *SignupData) error {
-
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(signupQuery.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return err
@@ -44,11 +50,9 @@ func hashPassword(signupQuery *SignupData) error {
 }
 
 func commitSignup(db *sql.DB, username string, password string) error {
-
 	_, err := db.Exec("CALL client_signup(?,?)", username, password)
 	if err != nil {
 		return err
 	}
-
 	return nil
 }

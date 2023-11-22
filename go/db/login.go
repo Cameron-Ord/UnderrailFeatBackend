@@ -39,10 +39,8 @@ func ConnectForLogin(loginQuery LoginData) ([]byte, error) {
 		return nil, err
 	}
 	session_map := make(map[string]string)
-
 	session_map["client_id"] = strconv.Itoa(client_id)
 	session_map["session_token"] = token_db
-
 	session_json, errjson := marshall_session(session_map)
 	if errjson != nil {
 		return nil, errjson
@@ -79,25 +77,25 @@ func checkPassword(db *sql.DB, loginQuery LoginData) error {
 		fmt.Println(err, "rows error")
 		return err
 	}
-
 	err = comparePWHash(hashed_password, loginQuery)
 	if err != nil {
 		fmt.Println(err, "compare error")
 		return err
 	}
-
 	err = hashLoginPassword(&loginQuery)
 	if err != nil {
 		fmt.Println(err, "hashing error")
 		return err
 	}
 	err = commitLogin(db, loginQuery.Username, loginQuery.Password)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
 
 func generateToken(length int) (string, error) {
-
 	hexlength := length / 2
 	randomBytes := make([]byte, hexlength)
 	_, err := rand.Read(randomBytes)
@@ -119,7 +117,6 @@ func commitLogin(db *sql.DB, username string, password string) error {
 	if err != nil {
 		return err
 	}
-
 	defer rows.Close()
 	for rows.Next() {
 		err = rows.Scan(&client_id, &token_db)

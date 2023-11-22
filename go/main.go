@@ -81,18 +81,18 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Error reading request", http.StatusBadRequest)
 			return
 		}
-
 		var signupQuery db.SignupData
 		if err := json.Unmarshal(body, &signupQuery); err != nil {
 			http.Error(w, "Error decoding JSON data", http.StatusBadRequest)
 			return
 		}
-		db.ConnectForSignup(signupQuery)
+		err = db.ConnectForSignup(signupQuery)
+		if err != nil {
+			return
+		}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-
 		result := "Signup successful"
-
 		signupResult, err := json.Marshal(result)
 		if err != nil {
 			return
