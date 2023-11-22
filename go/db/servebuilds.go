@@ -44,31 +44,45 @@ func ServeBuilds() ([]byte, error) {
 		return nil, err
 	}
 	fmt.Println("Connected to the database!")
-	type All_Returned_Data struct {
-		Returned_Feat_Slice  [][]Feat_Info
-		Returned_Stat_Slice  [][]Stat_Info
-		Returned_Skill_Slice [][]Skill_Info
-		Returned_Id_Slice    []Build_ID_Titles
-	}
-	var returnedData All_Returned_Data
-	returnedData.Returned_Id_Slice, err = getBuildIds(dbConn)
+
+	var Returned_Id_Slice []Build_ID_Titles
+	Returned_Id_Slice, err = getBuildIds(dbConn)
 	if err != nil {
 		return nil, err
 	}
-	returnedData.Returned_Skill_Slice, err = retrieve_skills(dbConn, returnedData.Returned_Id_Slice)
-	if err != nil {
-		return nil, err
+	type MiddleMan struct {
+		Skill_Slice []Skill_Info
+		Stat_Slice  []Stat_Info
+		Feat_Slice  []Feat_Info
+		Build_Title string
+		Build_ID    uint
 	}
-	returnedData.Returned_Stat_Slice, err = retrieve_stats(dbConn, returnedData.Returned_Id_Slice)
-	if err != nil {
-		return nil, err
+	AllReturnedData := []MiddleMan{}
+	for i := 0; i < len(Returned_Id_Slice); i++ {
+		id_val := Returned_Id_Slice[i]
+		returned_Skill_Slice, err := retrieve_skills(dbConn, id_val.Build_ID)
+		if err != nil {
+			return nil, err
+		}
+		returned_Stat_Slice, err := retrieve_stats(dbConn, id_val.Build_ID)
+		if err != nil {
+			return nil, err
+		}
+		returned_Feat_Slice, err := retrieve_feats(dbConn, id_val.Build_ID)
+		if err != nil {
+			return nil, err
+		}
+		middleMan := MiddleMan{
+			Skill_Slice: returned_Skill_Slice,
+			Stat_Slice:  returned_Stat_Slice,
+			Feat_Slice:  returned_Feat_Slice,
+			Build_Title: id_val.Title,
+			Build_ID:    id_val.Build_ID,
+		}
+		AllReturnedData = append(AllReturnedData, middleMan)
 	}
 
-	returnedData.Returned_Feat_Slice, err = retrieve_feats(dbConn, returnedData.Returned_Id_Slice)
-	if err != nil {
-		return nil, err
-	}
-	jsonified_data, err := json.Marshal(returnedData)
+	jsonified_data, err := json.Marshal(AllReturnedData)
 	if err != nil {
 		fmt.Println("Error marshaling to JSON:", err)
 		return nil, err
@@ -111,92 +125,75 @@ func getBuildIds(db *sql.DB) ([]Build_ID_Titles, error) {
 	return builds, nil
 }
 
-func retrieve_skills(db *sql.DB, id_slice []Build_ID_Titles) ([][]Skill_Info, error) {
-
-	var tha_big_slice [][]Skill_Info
-
-	for i := 0; i < len(id_slice); i++ {
-		all_skill_info := []Skill_Info{}
-		id_val := id_slice[i]
-		rows, err := db.Query("CALL get_all_skills(?)", id_val.Build_ID)
+func retrieve_skills(db *sql.DB, id_val uint) ([]Skill_Info, error) {
+	all_skill_info := []Skill_Info{}
+	rows, err := db.Query("CALL get_all_skills(?)", id_val)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var skill_name_holder string
+		var skill_value_holder int
+		err := rows.Scan(&skill_name_holder, &skill_value_holder)
 		if err != nil {
 			return nil, err
 		}
-		defer rows.Close()
-		for rows.Next() {
-			var skill_name_holder string
-			var skill_value_holder int
-			err := rows.Scan(&skill_name_holder, &skill_value_holder)
-			if err != nil {
-				return nil, err
-			}
-			currentSkill := Skill_Info{
-				Name:     skill_name_holder,
-				Value:    skill_value_holder,
-				Build_ID: id_val.Build_ID,
-			}
-			all_skill_info = append(all_skill_info, currentSkill)
+		currentSkill := Skill_Info{
+			Name:     skill_name_holder,
+			Value:    skill_value_holder,
+			Build_ID: id_val,
 		}
-		tha_big_slice = append(tha_big_slice, all_skill_info)
+		all_skill_info = append(all_skill_info, currentSkill)
 	}
-	return tha_big_slice, nil
+	return all_skill_info, nil
 }
 
-func retrieve_stats(db *sql.DB, id_slice []Build_ID_Titles) ([][]Stat_Info, error) {
-	var tha_big_slice [][]Stat_Info
+func retrieve_stats(db *sql.DB, id_val uint) ([]Stat_Info, error) {
 
-	for i := 0; i < len(id_slice); i++ {
-		all_stat_info := []Stat_Info{}
-		id_val := id_slice[i]
-		rows, err := db.Query("CALL get_all_stats(?)", id_val.Build_ID)
+	all_stat_info := []Stat_Info{}
+	rows, err := db.Query("CALL get_all_stats(?)", id_val)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var stat_name_holder string
+		var stat_value_holder int
+		err := rows.Scan(&stat_name_holder, &stat_value_holder)
 		if err != nil {
 			return nil, err
 		}
-		defer rows.Close()
-		for rows.Next() {
-			var stat_name_holder string
-			var stat_value_holder int
-			err := rows.Scan(&stat_name_holder, &stat_value_holder)
-			if err != nil {
-				return nil, err
-			}
-			currentStat := Stat_Info{
-				Name:     stat_name_holder,
-				Value:    stat_value_holder,
-				Build_ID: id_val.Build_ID,
-			}
-			all_stat_info = append(all_stat_info, currentStat)
+		currentStat := Stat_Info{
+			Name:     stat_name_holder,
+			Value:    stat_value_holder,
+			Build_ID: id_val,
 		}
-		tha_big_slice = append(tha_big_slice, all_stat_info)
+		all_stat_info = append(all_stat_info, currentStat)
 	}
-	return tha_big_slice, nil
+
+	return all_stat_info, nil
 }
 
-func retrieve_feats(db *sql.DB, id_slice []Build_ID_Titles) ([][]Feat_Info, error) {
+func retrieve_feats(db *sql.DB, id_val uint) ([]Feat_Info, error) {
 
-	var tha_big_slice [][]Feat_Info
-
-	for i := 0; i < len(id_slice); i++ {
-		all_feat_info := []Feat_Info{}
-		id_val := id_slice[i]
-		rows, err := db.Query("CALL get_all_feats(?)", id_val.Build_ID)
+	all_feat_info := []Feat_Info{}
+	rows, err := db.Query("CALL get_all_feats(?)", id_val)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var feat_name string
+		err := rows.Scan(&feat_name)
 		if err != nil {
 			return nil, err
 		}
-		defer rows.Close()
-		for rows.Next() {
-			var feat_name string
-			err := rows.Scan(&feat_name)
-			if err != nil {
-				return nil, err
-			}
-			currentFeat := Feat_Info{
-				Name:     feat_name,
-				Build_ID: id_val.Build_ID,
-			}
-			all_feat_info = append(all_feat_info, currentFeat)
+		currentFeat := Feat_Info{
+			Name:     feat_name,
+			Build_ID: id_val,
 		}
-		tha_big_slice = append(tha_big_slice, all_feat_info)
+		all_feat_info = append(all_feat_info, currentFeat)
 	}
-	return tha_big_slice, nil
+	return all_feat_info, nil
 }
