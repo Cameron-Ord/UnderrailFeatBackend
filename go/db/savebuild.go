@@ -121,7 +121,6 @@ func saveBuildStats(db *sql.DB, build *SaveData) error {
 		if err != nil {
 			return err
 		}
-		fmt.Println("Saving stats")
 		_, err = db.Exec(query, build_id, stat.StatName, statValueInt, build.Session_Token, build.Client_ID)
 		if err != nil {
 			return err
@@ -156,7 +155,6 @@ func saveBuildSkills(db *sql.DB, build *SaveData) error {
 		if err != nil {
 			return err
 		}
-		fmt.Println("Saving skills")
 		_, err = db.Exec(query, build_id, skill.SkillName, skillValueInt, build.Session_Token, build.Client_ID)
 		if err != nil {
 			return err

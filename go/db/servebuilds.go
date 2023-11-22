@@ -90,7 +90,6 @@ func getBuildIds(db *sql.DB) ([]Build_ID_Titles, error) {
 	for rows.Next() {
 		var id_holder uint
 		var title_holder string
-		fmt.Println("row iteration")
 		err := rows.Scan(&id_holder, &title_holder)
 		if err != nil {
 			return nil, err
