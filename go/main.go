@@ -37,6 +37,23 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	switch endpoint {
 
 	case "get-all-builds":
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "POST")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		_, err := io.ReadAll(r.Body)
+		if err != nil {
+			http.Error(w, "Error reading request", http.StatusBadRequest)
+			return
+		}
+		err = db.ServeBuilds()
+		if err != nil {
+			fmt.Println(err)
+			http.Error(w, "Error during DB transaction", http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
 
 	case "get-user-builds":
 
