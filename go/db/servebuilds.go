@@ -9,26 +9,6 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-type Feat_Info struct {
-	Name     string
-	Build_ID uint
-}
-
-type Skill_Info struct {
-	Name     string
-	Value    int
-	Build_ID uint
-}
-type Stat_Info struct {
-	Name     string
-	Value    int
-	Build_ID uint
-}
-type Build_ID_Titles struct {
-	Build_ID uint
-	Title    string
-}
-
 func ServeBuilds() ([]byte, error) {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", DBUsername, DBPassword, DBHost, DBPort, DBName)
 	dbConn, err := sql.Open("mysql", dsn)

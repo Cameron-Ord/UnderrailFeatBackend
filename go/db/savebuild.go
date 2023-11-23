@@ -4,39 +4,9 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
 )
-
-type Stat struct {
-	StatName  string `json:"statName"`
-	StatValue string `json:"statValue"`
-}
-
-type Skill struct {
-	SkillName  string `json:"skillName"`
-	SkillValue string `json:"skillValue"`
-}
-
-type Feat struct {
-	FeatName string `json:"Feat"`
-}
-
-type SaveData struct {
-	Stats         []Stat  `json:"stats"`
-	Skills        []Skill `json:"skills"`
-	Feats         []Feat  `json:"feats"`
-	Title         string  `json:"title"`
-	Client_ID     string  `json:"client_id"`
-	Session_Token string  `json:"session_token"`
-}
-
-func convertToInt(givenNumStr string) (int, error) {
-	//string to int conversion
-	NumToInt, err := strconv.Atoi(givenNumStr)
-	return NumToInt, err
-}
 
 func SaveBuild(build SaveData) error {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", DBUsername, DBPassword, DBHost, DBPort, DBName)
@@ -69,13 +39,16 @@ func SaveBuild(build SaveData) error {
 
 	err = saveBuildFeats(dbConn, &build)
 	if err != nil {
+		fmt.Println("Error saving build feats: ", err)
 		return err
 	}
+
+	fmt.Println("Finished..")
 	return nil
 }
 
 func saveBuildTitle(db *sql.DB, build *SaveData) error {
-	fmt.Println("Commiting build to DB..")
+	fmt.Println("Commiting build title to DB..")
 	rows, err := db.Query("CALL insert_build(?,?,?)", build.Title, build.Client_ID, build.Session_Token)
 	if err != nil {
 		return err
@@ -96,6 +69,7 @@ func saveBuildTitle(db *sql.DB, build *SaveData) error {
 }
 
 func saveBuildStats(db *sql.DB, build *SaveData) error {
+	fmt.Println("Commiting build stats to DB..")
 	var query string
 	var build_id uint
 	query = "SELECT id FROM builds WHERE client_id = ? AND title = ?"
@@ -117,11 +91,7 @@ func saveBuildStats(db *sql.DB, build *SaveData) error {
 	query = "CALL save_stats(?,?,?,?,?)"
 	for i := 0; i < len(build.Stats); i++ {
 		stat := build.Stats[i]
-		statValueInt, err := convertToInt(stat.StatValue)
-		if err != nil {
-			return err
-		}
-		_, err = db.Exec(query, build_id, stat.StatName, statValueInt, build.Session_Token, build.Client_ID)
+		_, err = db.Exec(query, build_id, stat.StatName, stat.StatValue, build.Session_Token, build.Client_ID)
 		if err != nil {
 			return err
 		}
@@ -130,6 +100,7 @@ func saveBuildStats(db *sql.DB, build *SaveData) error {
 }
 
 func saveBuildSkills(db *sql.DB, build *SaveData) error {
+	fmt.Println("Commiting build skills to DB..")
 	var query string
 	var build_id uint
 	query = "SELECT id FROM builds WHERE client_id = ? AND title = ?"
@@ -151,11 +122,7 @@ func saveBuildSkills(db *sql.DB, build *SaveData) error {
 	query = "CALL save_skills(?,?,?,?,?)"
 	for i := 0; i < len(build.Skills); i++ {
 		skill := build.Skills[i]
-		skillValueInt, err := convertToInt(skill.SkillValue)
-		if err != nil {
-			return err
-		}
-		_, err = db.Exec(query, build_id, skill.SkillName, skillValueInt, build.Session_Token, build.Client_ID)
+		_, err = db.Exec(query, build_id, skill.SkillName, skill.SkillValue, build.Session_Token, build.Client_ID)
 		if err != nil {
 			return err
 		}
@@ -164,6 +131,7 @@ func saveBuildSkills(db *sql.DB, build *SaveData) error {
 }
 
 func saveBuildFeats(db *sql.DB, build *SaveData) error {
+	fmt.Println("Commiting build feats to DB..")
 	var query string
 	var build_id uint
 	query = "SELECT id FROM builds WHERE client_id = ? AND title = ?"

@@ -9,11 +9,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type SignupData struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-}
-
 func ConnectForSignup(signupQuery SignupData) error {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", DBUsername, DBPassword, DBHost, DBPort, DBName)
 	dbConn, err := sql.Open("mysql", dsn)

@@ -56,6 +56,27 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		w.Write(jsonified_data)
 
 	case "get-user-builds":
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "POST")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		body, err := io.ReadAll(r.Body)
+		if err != nil {
+			http.Error(w, "Error reading request", http.StatusBadRequest)
+			return
+		}
+		var user_session_data db.User_Session_Data
+		err = json.Unmarshal(body, &user_session_data)
+		if err != nil {
+			http.Error(w, "Error decoding JSON data", http.StatusBadRequest)
+			return
+		}
+		jsonified_data, err := db.GetUserBuilds(user_session_data)
+		if err != nil {
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write(jsonified_data)
 
 	case "savebuild":
 
