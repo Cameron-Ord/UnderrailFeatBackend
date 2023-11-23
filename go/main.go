@@ -253,8 +253,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 	default:
 		var http_status int = 404
-		http.Error(w, "Invalid endpoint", http.StatusNotFound)
+		http.Error(w, "Invalid endpoint", http_status)
 		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http_status)
 	}
 }
