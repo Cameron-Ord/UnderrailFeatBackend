@@ -8,6 +8,25 @@ type SignupData struct {
 }
 
 // ---------------------------------- //
+// LOGIN CLASSES
+type LoginData struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+// ---------------------------------- //
+// SESSION DATA
+type User_Session_Data struct {
+	Client_Session_Token string
+	Client_ID_Value      uint
+}
+
+type Basic_User_Info struct {
+	Username   string
+	Created_at string
+}
+
+// ---------------------------------- //
 // SERVEBUILDS CLASSES
 type Feat_Info struct {
 	Name     string
@@ -26,31 +45,6 @@ type Stat_Info struct {
 type Build_ID_Titles struct {
 	Build_ID uint
 	Title    string
-}
-
-// ---------------------------------- //
-// PRIVATE SERVEBUILDS CLASSES
-type User_Session_Data struct {
-	Client_Session_Token string
-	Client_ID_Value      uint
-}
-type User_Build_ID_Titles struct {
-	Build_ID uint
-	Title    string
-}
-type User_Feat_Info struct {
-	Name     string
-	Build_ID uint
-}
-type User_Skill_Info struct {
-	Name     string
-	Value    int
-	Build_ID uint
-}
-type User_Stat_Info struct {
-	Name     string
-	Value    int
-	Build_ID uint
 }
 
 // ---------------------------------- //
@@ -76,16 +70,4 @@ type SaveData struct {
 	Title         string  `json:"title"`
 	Client_ID     uint    `json:"client_id"`
 	Session_Token string  `json:"session_token"`
-}
-
-// ---------------------------------- //
-// LOGIN CLASSES
-type LoginData struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-}
-
-type SessionDataStruct struct {
-	Client_ID     uint
-	Session_Token string
 }

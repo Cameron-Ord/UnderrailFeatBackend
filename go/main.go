@@ -37,6 +37,41 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	endpoint := vars["endpoint"]
 	switch endpoint {
 
+	case "get-profile-info":
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		var http_status int = 200
+		http_ptr := &http_status
+		session_token := r.URL.Query().Get("session_token")
+		client_id := r.URL.Query().Get("client_id")
+		if session_token == "" || client_id == "" {
+			*http_ptr = 400
+			http.Error(w, "Missing or invalid params", http_status)
+			return
+		}
+		uintVal, err := strconv.ParseUint(client_id, 10, 64)
+		if err != nil {
+			*http_ptr = 500
+			http.Error(w, "Error converting string values", http_status)
+			return
+		}
+		client_id_uint := uint(uintVal)
+		user_session_data := db.User_Session_Data{
+			Client_Session_Token: session_token,
+			Client_ID_Value:      client_id_uint,
+		}
+		jsonified_data, err := db.GetProfileInfo(user_session_data)
+		if err != nil {
+			*http_ptr = 500
+			fmt.Println("Error getting profile info", err)
+			http.Error(w, "Error getting profile info", http_status)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http_status)
+		w.Write(jsonified_data)
+
 	case "get-all-builds":
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Methods", "GET")
@@ -252,6 +287,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		}
 
 	default:
+		fmt.Println("Page not found")
 		var http_status int = 404
 		http.Error(w, "Invalid endpoint", http_status)
 		w.Header().Set("Content-Type", "application/json")

@@ -44,10 +44,10 @@ func comparePWHash(hashed_password string, loginQuery LoginData) error {
 
 func checkPassword(db *sql.DB, loginQuery LoginData) ([]byte, error) {
 	rows, err := db.Query("CALL get_hpw(?)", loginQuery.Username)
-	var hashed_password string
 	if err != nil {
 		return nil, err
 	}
+	var hashed_password string
 	defer rows.Close()
 	for rows.Next() {
 		var hashedPW string
@@ -78,9 +78,9 @@ func checkPassword(db *sql.DB, loginQuery LoginData) ([]byte, error) {
 		return nil, err
 	}
 
-	structToMarshall := SessionDataStruct{
-		Client_ID:     client_id,
-		Session_Token: token_db,
+	structToMarshall := User_Session_Data{
+		Client_ID_Value:      client_id,
+		Client_Session_Token: token_db,
 	}
 
 	session_json, errjson := marshall_session(structToMarshall)
@@ -90,7 +90,7 @@ func checkPassword(db *sql.DB, loginQuery LoginData) ([]byte, error) {
 
 	return session_json, nil
 }
-func marshall_session(structToMarshall SessionDataStruct) ([]byte, error) {
+func marshall_session(structToMarshall User_Session_Data) ([]byte, error) {
 	json, err := json.Marshal(structToMarshall)
 	if err != nil {
 		return nil, err

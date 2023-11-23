@@ -25,16 +25,16 @@ func GetUserBuilds(user_session_data User_Session_Data) ([]byte, error) {
 		return nil, err
 	}
 	fmt.Println("Connected to the database!")
-	var UserBuildIdSlice []User_Build_ID_Titles
+	var UserBuildIdSlice []Build_ID_Titles
 	UserBuildIdSlice, err = getUserBuildIds(dbConn, user_session_data)
 	if err != nil {
 		fmt.Println("Failed at retrieving IDS: ", err)
 		return nil, err
 	}
 	type MiddleMan struct {
-		Skill_Slice []User_Skill_Info
-		Stat_Slice  []User_Stat_Info
-		Feat_Slice  []User_Feat_Info
+		Skill_Slice []Skill_Info
+		Stat_Slice  []Stat_Info
+		Feat_Slice  []Feat_Info
 		Build_Title string
 		Build_ID    uint
 	}
@@ -71,9 +71,9 @@ func GetUserBuilds(user_session_data User_Session_Data) ([]byte, error) {
 	}
 	return jsonified_data, nil
 }
-func getUserBuildIds(db *sql.DB, user_session_data User_Session_Data) ([]User_Build_ID_Titles, error) {
+func getUserBuildIds(db *sql.DB, user_session_data User_Session_Data) ([]Build_ID_Titles, error) {
 	var query string
-	user_builds := []User_Build_ID_Titles{}
+	user_builds := []Build_ID_Titles{}
 	query = "CALL select_user_build_ids(?,?)"
 	rows, err := db.Query(query, user_session_data.Client_ID_Value, user_session_data.Client_Session_Token)
 	if err != nil {
@@ -87,7 +87,7 @@ func getUserBuildIds(db *sql.DB, user_session_data User_Session_Data) ([]User_Bu
 		if err != nil {
 			return nil, err
 		}
-		currentBuild := User_Build_ID_Titles{
+		currentBuild := Build_ID_Titles{
 			Build_ID: id_holder,
 			Title:    title_holder,
 		}
@@ -102,8 +102,8 @@ func getUserBuildIds(db *sql.DB, user_session_data User_Session_Data) ([]User_Bu
 	return user_builds, nil
 }
 
-func retrieve_user_skills(db *sql.DB, id_val uint, user_session_data User_Session_Data) ([]User_Skill_Info, error) {
-	all_skill_info := []User_Skill_Info{}
+func retrieve_user_skills(db *sql.DB, id_val uint, user_session_data User_Session_Data) ([]Skill_Info, error) {
+	all_skill_info := []Skill_Info{}
 	rows, err := db.Query("CALL get_client_skills(?,?,?)", id_val, user_session_data.Client_ID_Value, user_session_data.Client_Session_Token)
 	if err != nil {
 		return nil, err
@@ -116,7 +116,7 @@ func retrieve_user_skills(db *sql.DB, id_val uint, user_session_data User_Sessio
 		if err != nil {
 			return nil, err
 		}
-		currentSkill := User_Skill_Info{
+		currentSkill := Skill_Info{
 			Name:     skill_name_holder,
 			Value:    skill_value_holder,
 			Build_ID: id_val,
@@ -125,8 +125,8 @@ func retrieve_user_skills(db *sql.DB, id_val uint, user_session_data User_Sessio
 	}
 	return all_skill_info, nil
 }
-func retrieve_user_stats(db *sql.DB, id_val uint, user_session_data User_Session_Data) ([]User_Stat_Info, error) {
-	all_stat_info := []User_Stat_Info{}
+func retrieve_user_stats(db *sql.DB, id_val uint, user_session_data User_Session_Data) ([]Stat_Info, error) {
+	all_stat_info := []Stat_Info{}
 	rows, err := db.Query("CALL get_client_stats(?,?,?)", id_val, user_session_data.Client_ID_Value, user_session_data.Client_Session_Token)
 	if err != nil {
 		return nil, err
@@ -139,7 +139,7 @@ func retrieve_user_stats(db *sql.DB, id_val uint, user_session_data User_Session
 		if err != nil {
 			return nil, err
 		}
-		currentStat := User_Stat_Info{
+		currentStat := Stat_Info{
 			Name:     skill_name_holder,
 			Value:    skill_value_holder,
 			Build_ID: id_val,
@@ -148,9 +148,9 @@ func retrieve_user_stats(db *sql.DB, id_val uint, user_session_data User_Session
 	}
 	return all_stat_info, nil
 }
-func retrieve_user_feats(db *sql.DB, id_val uint, user_session_data User_Session_Data) ([]User_Feat_Info, error) {
+func retrieve_user_feats(db *sql.DB, id_val uint, user_session_data User_Session_Data) ([]Feat_Info, error) {
 
-	all_feat_info := []User_Feat_Info{}
+	all_feat_info := []Feat_Info{}
 	rows, err := db.Query("CALL get_client_feats(?,?,?)", id_val, user_session_data.Client_ID_Value, user_session_data.Client_Session_Token)
 	if err != nil {
 		return nil, err
@@ -162,7 +162,7 @@ func retrieve_user_feats(db *sql.DB, id_val uint, user_session_data User_Session
 		if err != nil {
 			return nil, err
 		}
-		currentFeat := User_Feat_Info{
+		currentFeat := Feat_Info{
 			Name:     feat_name,
 			Build_ID: id_val,
 		}
