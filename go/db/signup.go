@@ -16,7 +16,6 @@ func ConnectForSignup(signupQuery SignupData) error {
 		log.Fatal(err)
 	}
 	defer dbConn.Close()
-
 	err = dbConn.Ping()
 	if err != nil {
 		log.Fatal(err)

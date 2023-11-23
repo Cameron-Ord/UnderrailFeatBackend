@@ -7,6 +7,7 @@ import (
 	"main/calculation"
 	"main/db"
 	"net/http"
+	"strconv"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
@@ -38,44 +39,66 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 	case "get-all-builds":
 		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "POST")
+		w.Header().Set("Access-Control-Allow-Methods", "GET")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		var http_status int = 200
+		http_ptr := &http_status
 		_, err := io.ReadAll(r.Body)
 		if err != nil {
-			http.Error(w, "Error reading request", http.StatusBadRequest)
+			*http_ptr = 400
+			http.Error(w, "Error reading request", http_status)
 			return
 		}
 		jsonified_data, err := db.ServeBuilds()
 		if err != nil {
 			fmt.Println(err)
-			http.Error(w, "Error during DB transaction", http.StatusInternalServerError)
+			*http_ptr = 500
+			http.Error(w, "Error during DB transaction", http_status)
 			return
 		}
 		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		w.Write(jsonified_data)
+		w.WriteHeader(http_status)
+		if http_status == 200 {
+			w.Write(jsonified_data)
+		}
 
 	case "get-user-builds":
 		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "POST")
+		w.Header().Set("Access-Control-Allow-Methods", "GET")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-		body, err := io.ReadAll(r.Body)
-		if err != nil {
-			http.Error(w, "Error reading request", http.StatusBadRequest)
+		var http_status int = 200
+		http_ptr := &http_status
+		session_token := r.URL.Query().Get("session_token")
+		client_id := r.URL.Query().Get("client_id")
+
+		if session_token == "" || client_id == "" {
+			*http_ptr = 400
+			http.Error(w, "Missing or invalid params", http_status)
 			return
 		}
-		var user_session_data db.User_Session_Data
-		err = json.Unmarshal(body, &user_session_data)
+		//base 10, 64 bit
+		uintVal, err := strconv.ParseUint(client_id, 10, 64)
 		if err != nil {
-			http.Error(w, "Error decoding JSON data", http.StatusBadRequest)
+			*http_ptr = 500
+			http.Error(w, "Error converting string values", http_status)
 			return
 		}
+
+		client_id_uint := uint(uintVal)
+		user_session_data := db.User_Session_Data{
+			Client_Session_Token: session_token,
+			Client_ID_Value:      client_id_uint,
+		}
+
 		jsonified_data, err := db.GetUserBuilds(user_session_data)
 		if err != nil {
+			fmt.Println("Failed to retrieve data: ", err)
+			*http_ptr = 500
+			http.Error(w, "Error retrieving database data", http_status)
 			return
 		}
 		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
+		w.WriteHeader(http_status)
 		w.Write(jsonified_data)
 
 	case "savebuild":
@@ -83,126 +106,155 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Methods", "POST")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		var http_status int = 200
+		http_ptr := &http_status
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
-			http.Error(w, "Error reading request", http.StatusBadRequest)
+			*http_ptr = 400
+			http.Error(w, "Error reading request", http_status)
 			return
 		}
 		var saveData db.SaveData
 		if err := json.Unmarshal(body, &saveData); err != nil {
-			http.Error(w, "Error decoding JSON data", http.StatusBadRequest)
+			*http_ptr = 400
+			http.Error(w, "Error decoding JSON data", http_status)
 			return
 		}
 		err = db.SaveBuild(saveData)
 		if err != nil {
+			*http_ptr = 500
 			fmt.Println("Database error: ", err)
-			http.Error(w, "Error during DB transaction", http.StatusInternalServerError)
+			http.Error(w, "Error during DB transaction", http_status)
 			return
 		}
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
 		result := "Build saved successfully"
 		resultjson, err := json.Marshal(result)
 		if err != nil {
+			*http_ptr = 500
+			http.Error(w, "Error marshalling JSON", http_status)
 			return
 		}
-		w.Write(resultjson)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http_status)
+		if http_status == 200 {
+			w.Write(resultjson)
+		}
 
 	case "signup":
 
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Methods", "POST")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-
+		var http_status int = 200
+		http_ptr := &http_status
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
-			http.Error(w, "Error reading request", http.StatusBadRequest)
+			*http_ptr = 400
+			http.Error(w, "Error reading request", http_status)
 			return
 		}
 		var signupQuery db.SignupData
 		if err := json.Unmarshal(body, &signupQuery); err != nil {
-			http.Error(w, "Error decoding JSON data", http.StatusBadRequest)
+			*http_ptr = 400
+			http.Error(w, "Error decoding JSON data", http_status)
 			return
 		}
 		err = db.ConnectForSignup(signupQuery)
 		if err != nil {
+			*http_ptr = 500
+			http.Error(w, "Error during signup", http_status)
 			return
 		}
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
 		result := "Signup successful"
 		signupResult, err := json.Marshal(result)
 		if err != nil {
+			*http_ptr = 500
+			http.Error(w, "Error during json marshalling", http_status)
 			return
 		}
-
-		w.Write(signupResult)
-
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http_status)
+		if http_status == 200 {
+			w.Write(signupResult)
+		}
 	case "login":
 
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Methods", "POST")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		var http_status int = 200
+		http_ptr := &http_status
 
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
-			http.Error(w, "Error reading request", http.StatusBadRequest)
+			*http_ptr = 400
+			http.Error(w, "Error reading request", http_status)
 			return
 		}
 
 		var loginQuery db.LoginData
 		if err := json.Unmarshal(body, &loginQuery); err != nil {
-			http.Error(w, "Error decoding JSON data", http.StatusBadRequest)
+			*http_ptr = 400
+			http.Error(w, "Error decoding JSON data", http_status)
 			return
 		}
 		fmt.Println(loginQuery.Username)
 		fmt.Println(loginQuery.Password)
 		session_data, err := db.ConnectForLogin(loginQuery)
 		if err != nil {
-			http.Error(w, "Error during login", http.StatusUnauthorized)
+			*http_ptr = 401
+			http.Error(w, "Error during login", http_status)
 			return
 		}
 		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		w.Write(session_data)
+		w.WriteHeader(http_status)
+		if http_status == 200 {
+			w.Write(session_data)
+		}
 
 	case "calculate":
 		//setting cors headers
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Methods", "POST")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		var http_status int = 200
+		http_ptr := &http_status
 		//reading all data sent from frontend
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
 			http.Error(w, "Error reading request", http.StatusBadRequest)
-			return
+			*http_ptr = 400
 		}
 		//unmarshalling the json data to the structs in calculation.go
 		var data calculation.RequestData
 		if err := json.Unmarshal(body, &data); err != nil {
 			http.Error(w, "Error decoding JSON data", http.StatusBadRequest)
-			return
+			*http_ptr = 400
 		}
 		//initializing the skill and stat checkers and assigning the returned result
 		returnedFeats, err := calculation.PrepareData(data)
 		//if the function returns an error, returns and writes a error
 		if err != nil {
 			http.Error(w, "Error during calculation", http.StatusInternalServerError)
-			return
+			*http_ptr = 500
 		}
 		//if there is no error, statusOKs and writes makes a response using the returnedFeats json
 		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
+		w.WriteHeader(http_status)
 
-		fmt.Println(" ")
-		fmt.Println("----------------------")
-		fmt.Println("Finished... making response..")
-		fmt.Println("----------------------")
-		fmt.Println(" ")
+		if http_status == 200 {
+			fmt.Println(" ")
+			fmt.Println("----------------------")
+			fmt.Println("Finished... making response..")
+			fmt.Println("----------------------")
+			fmt.Println(" ")
+			w.Write(returnedFeats)
+		}
 
-		w.Write(returnedFeats)
-		return
 	default:
+		var http_status int = 404
 		http.Error(w, "Invalid endpoint", http.StatusNotFound)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http_status)
 	}
 }

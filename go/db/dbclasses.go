@@ -31,13 +31,26 @@ type Build_ID_Titles struct {
 // ---------------------------------- //
 // PRIVATE SERVEBUILDS CLASSES
 type User_Session_Data struct {
-	Client_Session_Token string `json:"session_token"`
-	Client_ID_Value      uint   `json:"client_id"`
+	Client_Session_Token string
+	Client_ID_Value      uint
 }
-
-type User_Build_IDs struct {
+type User_Build_ID_Titles struct {
 	Build_ID uint
 	Title    string
+}
+type User_Feat_Info struct {
+	Name     string
+	Build_ID uint
+}
+type User_Skill_Info struct {
+	Name     string
+	Value    int
+	Build_ID uint
+}
+type User_Stat_Info struct {
+	Name     string
+	Value    int
+	Build_ID uint
 }
 
 // ---------------------------------- //
