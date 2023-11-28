@@ -14,12 +14,12 @@ import (
 
 type Stat struct {
 	StatName  string `json:"statName"`
-	StatValue string `json:"statValue"`
+	StatValue int    `json:"statValue"`
 }
 
 type Skill struct {
 	SkillName  string `json:"skillName"`
-	SkillValue string `json:"skillValue"`
+	SkillValue int    `json:"skillValue"`
 }
 
 type RequestData struct {
@@ -123,20 +123,15 @@ func convertToInt(givenNumStr string) (int, error) {
 	return NumToInt, err
 }
 
-func performCheck(metPtr *[]string, failedPtr *[]string, requirement string, name string, value string) error {
-	skillRequirement, err := convertToInt(requirement)
+func performCheck(metPtr *[]string, failedPtr *[]string, requirement string, name string, given_value int) error {
+	required_value, err := convertToInt(requirement)
 	if err != nil {
 		return err
 	}
 
-	givenSkillValue, err := convertToInt(value)
-	if err != nil {
-		return err
-	}
-
-	if givenSkillValue >= skillRequirement {
+	if given_value >= required_value {
 		*metPtr = append(*metPtr, name)
-	} else if givenSkillValue < skillRequirement {
+	} else if given_value < required_value {
 		*failedPtr = append(*failedPtr, name)
 	}
 	return nil
@@ -163,7 +158,7 @@ func checkSkill(feats []map[string]string, data RequestData, allAllocatedFeats *
 			//assigning individual skill from index in order to access the skillName and skillValue
 			skill := data.Skills[j]
 			var skillName string = skill.SkillName
-			var skillValue string = skill.SkillValue
+			var skillValue int = skill.SkillValue
 			//if the feat contains the current skillname(from index), sets the value from feat to the requirement variable if ok gets set to true
 			if requirement, ok := feat[skillName]; ok {
 				err := performCheck(&skillsMet, &skillsFailed, requirement, skillName, skillValue)
@@ -275,7 +270,7 @@ func checkStat(feats []map[string]string, data RequestData, allAllocatedFeats *[
 			//copying over the statName to its own variable
 			var statName string = stat.StatName
 			//doing the same, but with the value of the stat received front the frontend
-			var statValue string = stat.StatValue
+			var statValue int = stat.StatValue
 			//if ok = true, this index of feats contains the statName(data.Stats contains every stat so by looping it, this if check is being checked until every stat has been thrown at it)
 			if requirement, ok := feat[statName]; ok {
 				err := performCheck(&statsMet, &statsFailed, requirement, statName, statValue)
@@ -354,7 +349,7 @@ func checkSkillStat(feats []map[string]string, data RequestData, allAllocatedFea
 			stat := data.Stats[j]
 			//copying the StatName and StatValue over to their own variables
 			var statName string = stat.StatName
-			var statValue string = stat.StatValue
+			var statValue int = stat.StatValue
 			//if this iteration of Feats(i) has the current iteration of Stats(j) ok gets set to true and the code gets executed
 			if requirement, ok := feat[statName]; ok {
 				err := performCheck(&statsMet, &statsFailed, requirement, statName, statValue)
@@ -399,7 +394,7 @@ func checkSkillStat(feats []map[string]string, data RequestData, allAllocatedFea
 				for l := 0; l < len(data.Skills); l++ {
 					skill := data.Skills[l]
 					var skillName string = skill.SkillName
-					var skillValue string = skill.SkillValue
+					var skillValue int = skill.SkillValue
 					if requirement, ok := feat[skillName]; ok {
 						err := performCheck(&skillsMet, &skillsFailed, requirement, skillName, skillValue)
 						if err != nil {

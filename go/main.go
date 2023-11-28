@@ -259,12 +259,14 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			http.Error(w, "Error reading request", http.StatusBadRequest)
 			*http_ptr = 400
+			return
 		}
 		//unmarshalling the json data to the structs in calculation.go
 		var data calculation.RequestData
 		if err := json.Unmarshal(body, &data); err != nil {
 			http.Error(w, "Error decoding JSON data", http.StatusBadRequest)
 			*http_ptr = 400
+			return
 		}
 		//initializing the skill and stat checkers and assigning the returned result
 		returnedFeats, err := calculation.PrepareData(data)
@@ -272,6 +274,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			http.Error(w, "Error during calculation", http.StatusInternalServerError)
 			*http_ptr = 500
+			return
 		}
 		//if there is no error, statusOKs and writes makes a response using the returnedFeats json
 		w.Header().Set("Content-Type", "application/json")
