@@ -197,6 +197,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		err = db.ConnectForSignup(signupQuery)
 		if err != nil {
 			*http_ptr = 500
+			fmt.Println("SIGNUP ERROR: ", err)
 			http.Error(w, "Error during signup", http_status)
 			return
 		}
