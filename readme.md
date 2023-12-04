@@ -4,6 +4,6 @@ Backend for the feat generator website. This handles user/feat/stat/skill data a
 
 
 TODO: 
-    Make the generate code a little simpler/more robust. IT DOES do the job well, but I am at a point in my project where I am reasonably happy with how the frontend is right now and want to refactor it. 
+    Make the generator code a little simpler/more robust. IT DOES do the job well, but I am at a point in my project where I am reasonably happy with how the frontend is right now and want to refactor it. 
 
 
