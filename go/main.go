@@ -270,7 +270,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		//initializing the skill and stat checkers and assigning the returned result
-		returnedFeats, err := calculation.PrepareData(data)
+		returnedFeats, err := calculation.Prepare_Data(data)
 		//if the function returns an error, returns and writes a error
 		if err != nil {
 			http.Error(w, "Error during calculation", http.StatusInternalServerError)
