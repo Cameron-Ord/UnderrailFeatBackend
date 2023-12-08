@@ -13,14 +13,22 @@ import (
 	"github.com/gorilla/mux"
 )
 
+var url string
+
 func main() {
+
+	if db.Production_Mode {
+		url = "https://featgenerator.cameron-ord.online"
+	} else if !db.Production_Mode {
+		url = "http://localhost:5173"
+	}
 	// setting the router to handle paths
 	r := mux.NewRouter()
 	//sends the /api/endpoint to the handler
 	r.HandleFunc("/api/{endpoint}", handler).Methods("POST", "GET", "DELETE", "UPDATE")
 	//setting cors, currently set with wildcard for testing
 	corsHandler := handlers.CORS(
-		handlers.AllowedOrigins([]string{"*"}),
+		handlers.AllowedOrigins([]string{url}),
 		handlers.AllowedMethods([]string{"POST", "GET", "DELETE", "UPDATE"}),
 		handlers.AllowedHeaders([]string{"Content-Type"}),
 	)
@@ -38,7 +46,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	switch endpoint {
 
 	case "get-profile-info":
-		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Origin", url)
 		w.Header().Set("Access-Control-Allow-Methods", "GET")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		var http_status int = 200
@@ -73,7 +81,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		w.Write(jsonified_data)
 
 	case "get-all-builds":
-		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Origin", url)
 		w.Header().Set("Access-Control-Allow-Methods", "GET")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		var http_status int = 200
@@ -98,7 +106,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		}
 
 	case "get-user-builds":
-		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Origin", url)
 		w.Header().Set("Access-Control-Allow-Methods", "GET")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		var http_status int = 200
@@ -138,7 +146,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 	case "savebuild":
 
-		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Origin", url)
 		w.Header().Set("Access-Control-Allow-Methods", "POST")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		var http_status int = 200
@@ -177,7 +185,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 	case "signup":
 
-		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Origin", url)
 		w.Header().Set("Access-Control-Allow-Methods", "POST")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		var http_status int = 200
@@ -215,7 +223,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		}
 	case "login":
 
-		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Origin", url)
 		w.Header().Set("Access-Control-Allow-Methods", "POST")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		var http_status int = 200
@@ -250,7 +258,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 	case "calculate":
 		//setting cors headers
-		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Origin", url)
 		w.Header().Set("Access-Control-Allow-Methods", "POST")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		var http_status int = 200
