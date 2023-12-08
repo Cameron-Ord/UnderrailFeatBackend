@@ -141,14 +141,6 @@ func Run_Calculation(Feats []map[string]string, data RequestData, allAllocatedFe
 				return err
 			}
 
-			if len(stats_met) == 0 {
-				no_fails = false
-			}
-
-			if len(skills_met) == 0 {
-				no_fails = false
-			}
-
 			if len(stats_met) > 0 {
 				if len(stats_failed) > 0 {
 					for l := 0; l < len(stats_failed); l++ {
@@ -195,6 +187,11 @@ func Run_Calculation(Feats []map[string]string, data RequestData, allAllocatedFe
 						}
 					}
 				}
+
+				if len(skills_met) == 0 {
+					no_fails = false
+				}
+
 				if no_fails {
 					*allAllocatedFeats = append(*allAllocatedFeats, Feat["Feat"])
 				}
