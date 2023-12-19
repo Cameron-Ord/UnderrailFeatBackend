@@ -1,9 +1,9 @@
-## FEAT GEN BACKEND
+## Underrail Feat Generator Backend
 
-Backend for the feat generator website. This handles user/feat/stat/skill data as well as the actual generator code.
+Welcome to the Underrail Feat Generator Backend! This backend service handles feat calculations, user authentication (signup and login), and the retrieval of existing builds saved by users.
 
-
-TODO: 
-    Make the generator code a little simpler/more robust. IT DOES do the job well, but I am at a point in my project where I am reasonably happy with how the frontend is right now and want to refactor it. 
-
+### What this backend does
+    -> Feat Calculations: Perform calculations for feats in the Underrail game based on user input.
+    -> User Authentication: Allow users to sign up, log in, and manage their accounts securely.
+    -> Build Retrieval: Fetch existing builds saved by users.
 
