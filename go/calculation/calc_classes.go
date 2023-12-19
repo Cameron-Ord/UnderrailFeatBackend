@@ -11,8 +11,9 @@ type Skill struct {
 }
 
 type RequestData struct {
-	Stats  []Stat  `json:"stats"`
-	Skills []Skill `json:"skills"`
+	Stats          []Stat  `json:"stats"`
+	Skills         []Skill `json:"skills"`
+	Character_Type string  `json:"type"`
 }
 
 type Skills_Tracker struct {

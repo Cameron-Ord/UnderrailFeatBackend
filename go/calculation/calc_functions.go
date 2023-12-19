@@ -6,7 +6,13 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"strings"
 )
+
+func Check_For_Type(Feat_Type string, type_substr string) bool {
+	contains_substr := strings.Contains(Feat_Type, type_substr)
+	return contains_substr
+}
 
 func Marshal_Data(sentSlice []string) ([]byte, error) {
 	//assigning jsondata from the sentslice(the amalgamation of the results from all the checks)
@@ -230,8 +236,16 @@ func Run_Calculation(Feats []map[string]string, data RequestData, allAllocatedFe
 				}
 			}
 			if !UTTERFAILURE {
-				fmt.Println(Feat["Feat"], " ", "Checked for no failures on STAT+SKILL")
-				*allAllocatedFeats = append(*allAllocatedFeats, Feat["Feat"])
+				if data.Character_Type != "" && Feat["Type"] != "" {
+					var matches bool = Check_For_Type(Feat["Type"], data.Character_Type)
+					if matches {
+						fmt.Println(Feat["Feat"], " ", "Checked for no failures on STAT+SKILL")
+						*allAllocatedFeats = append(*allAllocatedFeats, Feat["Feat"])
+					}
+				} else {
+					fmt.Println(Feat["Feat"], " ", "Checked for no failures on STAT+SKILL")
+					*allAllocatedFeats = append(*allAllocatedFeats, Feat["Feat"])
+				}
 			}
 
 		} else if len(stats_required) > 0 && len(skills_required) == 0 {
@@ -270,8 +284,16 @@ func Run_Calculation(Feats []map[string]string, data RequestData, allAllocatedFe
 			}
 
 			if !UTTERFAILURE {
-				fmt.Println(Feat["Feat"], " ", "Checked for no failures on STAT")
-				*allAllocatedFeats = append(*allAllocatedFeats, Feat["Feat"])
+				if data.Character_Type != "" && Feat["Type"] != "" {
+					var matches bool = Check_For_Type(Feat["Type"], data.Character_Type)
+					if matches {
+						fmt.Println(Feat["Feat"], " ", "Checked for no failures on STAT")
+						*allAllocatedFeats = append(*allAllocatedFeats, Feat["Feat"])
+					}
+				} else {
+					fmt.Println(Feat["Feat"], " ", "Checked for no failures on STAT")
+					*allAllocatedFeats = append(*allAllocatedFeats, Feat["Feat"])
+				}
 			}
 
 		} else if len(skills_required) > 0 && len(stats_required) == 0 {
@@ -336,8 +358,16 @@ func Run_Calculation(Feats []map[string]string, data RequestData, allAllocatedFe
 			}
 
 			if !UTTERFAILURE {
-				fmt.Println(Feat["Feat"], " ", "Checked for no failures on SKILL")
-				*allAllocatedFeats = append(*allAllocatedFeats, Feat["Feat"])
+				if data.Character_Type != "" && Feat["Type"] != "" {
+					var matches bool = Check_For_Type(Feat["Type"], data.Character_Type)
+					if matches {
+						fmt.Println(Feat["Feat"], " ", "Checked for no failures on SKILL")
+						*allAllocatedFeats = append(*allAllocatedFeats, Feat["Feat"])
+					}
+				} else {
+					fmt.Println(Feat["Feat"], " ", "Checked for no failures on SKILL")
+					*allAllocatedFeats = append(*allAllocatedFeats, Feat["Feat"])
+				}
 			}
 		}
 		fmt.Println()
