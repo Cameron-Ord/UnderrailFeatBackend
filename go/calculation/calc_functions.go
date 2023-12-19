@@ -2,6 +2,7 @@ package calculation
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -46,12 +47,14 @@ func Str_Conversion(givenNumInt int) string {
 func Perform_Check(metPtr *[]string, failedPtr *[]string, requirement string, name string, given_value int) error {
 	required_value, err := Int_Conversion(requirement)
 	if err != nil {
+		fmt.Println("Error during str conversion", err)
 		return err
 	}
-
 	if given_value >= required_value {
+		fmt.Println("SUCCESS: ", name, "-> REASON: ", given_value, " > ", required_value)
 		*metPtr = append(*metPtr, name)
 	} else if given_value < required_value {
+		fmt.Println("FAILED: ", name, "-> REASON: ", given_value, " < ", required_value)
 		*failedPtr = append(*failedPtr, name)
 	}
 	return nil
@@ -81,6 +84,8 @@ func Get_Requirements(Feat map[string]string, data RequestData, stats_req *[]Sta
 			*skills_req = append(*skills_req, skills_tracker)
 		}
 	}
+
+	fmt.Println("Requirements retrieved..")
 }
 
 func Check_All(stats_required []Stats_Tracker, skills_required []Skills_Tracker, stats_met *[]string, stats_failed *[]string, skills_met *[]string, skills_failed *[]string) error {
@@ -123,158 +128,219 @@ func Check_Skills(skills_required []Skills_Tracker, skills_met *[]string, skills
 func Run_Calculation(Feats []map[string]string, data RequestData, allAllocatedFeats *[]string) error {
 
 	for i := 0; i < len(Feats); i++ {
+		fmt.Println("Beginning checks on: ", Feats[i]["Feat"], "...")
+		fmt.Println()
 		Feat := Feats[i]
 		var stats_required = []Stats_Tracker{}
 		var skills_required = []Skills_Tracker{}
+		fmt.Println("Getting requirements..")
 		Get_Requirements(Feat, data, &stats_required, &skills_required)
 		if len(stats_required) > 0 && len(skills_required) > 0 {
 			var stats_met = []string{}
 			var stats_failed = []string{}
 			var skills_met = []string{}
 			var skills_failed = []string{}
-			var no_fails bool = true
+			//failure tracking, if this is true even once it's failure
+			var UTTERFAILURE bool = false
+
 			err := Check_All(
 				stats_required, skills_required, &stats_met,
 				&stats_failed, &skills_met, &skills_failed,
 			)
 			if err != nil {
+				fmt.Println("Errored: ", err)
 				return err
 			}
 
-			if len(stats_met) > 0 {
-				if len(stats_failed) > 0 {
-					for l := 0; l < len(stats_failed); l++ {
-						if hard_req, ok := Feat["NeedsAllStats"]; ok {
-							if hard_req == "true" {
-								no_fails = false
-								break
-							} else if hard_req == "false" {
-								no_fails = true
-							}
-						}
-					}
-				}
-				if len(skills_met) > 0 {
-					if hard_req, ok := Feat["HardRequirement"]; ok {
-						for g := 0; g < len(skills_met); g++ {
-							skill := skills_met[g]
-							if skill != hard_req {
-								no_fails = true
-								break
-							} else {
-								no_fails = false
-							}
-						}
-					} else {
-						no_fails = true
-					}
+			if len(stats_met) == 0 {
+				fmt.Println("Failed(stat+skill): ", Feat["Feat"], "-> REASON: (No stats met)")
+				UTTERFAILURE = true
+			}
+			var stats_are_failed bool = false
+			if len(stats_failed) > 0 {
+				stats_are_failed = true
+			}
 
-					if no_fails && len(skills_failed) > 0 {
-						for h := 0; h < len(skills_failed); h++ {
-							if skill_required, ok := Feat["NeedsAllSkills"]; ok {
-								if skill_required == "false" {
-									if hard_requirement, ok := Feat["HardRequirement"]; ok && hard_requirement == skills_failed[h] {
-										no_fails = false
-										break
-									} else {
-										no_fails = true
-									}
-								} else if skill_required == "true" {
-									no_fails = false
-									break
-								}
-							}
-						}
+			if stats_are_failed {
+				var required []string
+				for l := 0; l < len(stats_failed); l++ {
+					if hard_req, ok := Feat["NeedsAllStats"]; ok {
+						required = append(required, hard_req)
 					}
 				}
 
-				if len(skills_met) == 0 {
-					no_fails = false
-				}
-
-				if no_fails {
-					*allAllocatedFeats = append(*allAllocatedFeats, Feat["Feat"])
+				for j := 0; j < len(required); j++ {
+					if required[j] == "true" {
+						fmt.Println("Failed(stat+skill): ", Feat["Feat"], "-> REASON: (Stat had hard requirement)")
+						UTTERFAILURE = true
+					}
 				}
 			}
+
+			if len(skills_met) == 0 {
+				fmt.Println("Failed(stat+skill): ", Feat["Feat"], "-> REASON: (No skills were met)")
+				UTTERFAILURE = true
+			}
+
+			var skills_are_failed bool = false
+			if len(skills_failed) > 0 {
+				skills_are_failed = true
+			}
+
+			/*
+				doing this because technically the skill_is_required == "false" isn't infallible.
+				If I don't do this check, if the hardrequirement is within the skills_failed and all skills aren't (technically) required, it will bypass the check coming up
+			*/
+			if hard_req, ok := Feat["HardRequirement"]; ok && skills_are_failed {
+				for g := 0; g < len(skills_failed); g++ {
+					skill := skills_failed[g]
+					if skill == hard_req {
+						fmt.Println("Failed(stat+skill): ", Feat["Feat"], "-> REASON: (Skill had hard requirement: ", hard_req, ")")
+						UTTERFAILURE = true
+					}
+				}
+			}
+
+			if skills_are_failed {
+				for h := 0; h < len(skills_failed); h++ {
+					var is_ok bool = false
+					var skill_is_required string
+					if skill_required, ok := Feat["NeedsAllSkills"]; ok {
+						is_ok = true
+						skill_is_required = skill_required
+					}
+					if !is_ok {
+						fmt.Println("Failed(stat+skill): ", Feat["Feat"], "-> REASON: (Failed: Didn't have required JSON data)")
+						UTTERFAILURE = true
+					}
+					var check_for_hard_requirement bool = false
+					if skill_is_required == "false" {
+						check_for_hard_requirement = true
+					} else if skill_is_required == "true" {
+						fmt.Println("Failed(stat+skill): ", Feat["Feat"], "-> REASON: (Failed skill was required(all were required))")
+						UTTERFAILURE = true
+					}
+
+					if check_for_hard_requirement {
+						if hard_requirement, ok := Feat["HardRequirement"]; ok && hard_requirement == skills_failed[h] {
+							fmt.Println("Failed(stat+skill): ", Feat["Feat"], "-> REASON: (Failed on hard required skill)")
+							UTTERFAILURE = true
+						}
+					}
+				}
+			}
+			if !UTTERFAILURE {
+				fmt.Println(Feat["Feat"], " ", "Checked for no failures on STAT+SKILL")
+				*allAllocatedFeats = append(*allAllocatedFeats, Feat["Feat"])
+			}
+
 		} else if len(stats_required) > 0 && len(skills_required) == 0 {
 			var stats_met = []string{}
 			var stats_failed = []string{}
-			var no_fails bool = true
+			var UTTERFAILURE bool = false
+
 			err := Check_Stats(stats_required, &stats_met, &stats_failed)
 			if err != nil {
+				fmt.Println("Errored: ", err)
 				return err
 			}
 			if len(stats_met) == 0 {
-				no_fails = false
+				fmt.Println("Failed(stat): ", Feat["Feat"], "-> REASON: (No stats met)")
+				UTTERFAILURE = true
+			}
+			var stats_are_failed bool = false
+			if len(stats_failed) > 0 {
+				stats_are_failed = true
 			}
 
-			if len(stats_met) > 0 {
-				if len(stats_failed) > 0 {
-					for l := 0; l < len(stats_failed); l++ {
-						if hard_req, ok := Feat["NeedsAllStats"]; ok {
-							if hard_req == "true" {
-								no_fails = false
-								break
-							} else if hard_req == "false" {
-								no_fails = true
-							}
-						}
+			if stats_are_failed {
+				var required []string
+				for l := 0; l < len(stats_failed); l++ {
+					if hard_req, ok := Feat["NeedsAllStats"]; ok {
+						required = append(required, hard_req)
 					}
 				}
-				if no_fails {
-					*allAllocatedFeats = append(*allAllocatedFeats, Feat["Feat"])
+
+				for j := 0; j < len(required); j++ {
+					if required[j] == "true" {
+						fmt.Println("Failed(stat): ", Feat["Feat"], "-> REASON: (Stat had hard requirement)")
+						UTTERFAILURE = true
+					}
 				}
+			}
+
+			if !UTTERFAILURE {
+				fmt.Println(Feat["Feat"], " ", "Checked for no failures on STAT")
+				*allAllocatedFeats = append(*allAllocatedFeats, Feat["Feat"])
 			}
 
 		} else if len(skills_required) > 0 && len(stats_required) == 0 {
 			var skills_met = []string{}
 			var skills_failed = []string{}
-			var no_fails bool = true
+			var UTTERFAILURE bool = false
+
 			err := Check_Skills(skills_required, &skills_met, &skills_failed)
 			if err != nil {
 				return err
 			}
 			if len(skills_met) == 0 {
-				no_fails = false
+				fmt.Println("Failed(skill): ", Feat["Feat"], "-> REASON: (No skills were met)")
+				UTTERFAILURE = true
+			}
+			var skills_are_failed bool = false
+			if len(skills_failed) > 0 {
+				skills_are_failed = true
 			}
 
-			if len(skills_met) > 0 {
-				if hard_req, ok := Feat["HardRequirement"]; ok {
-					for g := 0; g < len(skills_met); g++ {
-						skill := skills_met[g]
-						if skill != hard_req {
-							no_fails = true
-							break
-						} else {
-							no_fails = false
-						}
+			/*
+				doing this because technically the skill_is_required == "false" isn't infallible.
+				If I don't do this check, if the hardrequirement is within the skills_failed and all skills aren't (technically) required, it will bypass the check coming up
+			*/
+			if hard_req, ok := Feat["HardRequirement"]; ok && skills_are_failed {
+				for g := 0; g < len(skills_failed); g++ {
+					skill := skills_failed[g]
+					if skill == hard_req {
+						fmt.Println("Failed(skill): ", Feat["Feat"], "-> REASON: (Skill had hard requirement: ", hard_req, ")")
+						UTTERFAILURE = true
 					}
-				} else {
-					no_fails = true
 				}
+			}
 
-				if no_fails && len(skills_failed) > 0 {
-					for h := 0; h < len(skills_failed); h++ {
-						if skill_required, ok := Feat["NeedsAllSkills"]; ok {
-							if skill_required == "false" {
-								if hard_requirement, ok := Feat["HardRequirement"]; ok && hard_requirement == skills_failed[h] {
-									no_fails = false
-									break
-								} else {
-									no_fails = true
-								}
-							} else if skill_required == "true" {
-								no_fails = false
-								break
-							}
+			if skills_are_failed {
+				for h := 0; h < len(skills_failed); h++ {
+					var is_ok bool = false
+					var skill_is_required string
+					if skill_required, ok := Feat["NeedsAllSkills"]; ok {
+						is_ok = true
+						skill_is_required = skill_required
+					}
+					if !is_ok {
+						fmt.Println("Failed(skill): ", Feat["Feat"], "-> REASON: (Failed: Didn't have required JSON data)")
+						UTTERFAILURE = true
+					}
+					var check_for_hard_requirement bool = false
+					if skill_is_required == "false" {
+						check_for_hard_requirement = true
+					} else if skill_is_required == "true" {
+						fmt.Println("Failed(skill): ", Feat["Feat"], "-> REASON: (Failed skill was required(all were required))")
+						UTTERFAILURE = true
+					}
+
+					if check_for_hard_requirement {
+						if hard_requirement, ok := Feat["HardRequirement"]; ok && hard_requirement == skills_failed[h] {
+							fmt.Println("Failed(skill): ", Feat["Feat"], "-> REASON: (Failed on hard required skill)")
+							UTTERFAILURE = true
 						}
 					}
 				}
-				if no_fails {
-					*allAllocatedFeats = append(*allAllocatedFeats, Feat["Feat"])
-				}
+			}
+
+			if !UTTERFAILURE {
+				fmt.Println(Feat["Feat"], " ", "Checked for no failures on SKILL")
+				*allAllocatedFeats = append(*allAllocatedFeats, Feat["Feat"])
 			}
 		}
+		fmt.Println()
 	}
 	return nil
 }

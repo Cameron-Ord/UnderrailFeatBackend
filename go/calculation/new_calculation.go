@@ -1,7 +1,5 @@
 package calculation
 
-import "fmt"
-
 func Prepare_Data(data RequestData) ([]byte, error) {
 	var allAllocatedFeats []string
 	var Feats []map[string]string
@@ -11,7 +9,7 @@ func Prepare_Data(data RequestData) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("ALL ALLOCATED : ", allAllocatedFeats)
+
 	jsonData, err := Marshal_Data(allAllocatedFeats)
 	if err != nil {
 		return nil, err
