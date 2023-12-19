@@ -10,7 +10,8 @@ import (
 )
 
 func Check_For_Type(Feat_Type string, type_substr string) bool {
-	contains_substr := strings.Contains(Feat_Type, type_substr)
+	trimmed_substr := strings.TrimSpace(type_substr)
+	contains_substr := strings.Contains(Feat_Type, trimmed_substr)
 	return contains_substr
 }
 
@@ -135,6 +136,7 @@ func Run_Calculation(Feats []map[string]string, data RequestData, allAllocatedFe
 
 	for i := 0; i < len(Feats); i++ {
 		fmt.Println("Beginning checks on: ", Feats[i]["Feat"], "...")
+		fmt.Println("CHARACTER TYPE: ", data.Character_Type)
 		fmt.Println()
 		Feat := Feats[i]
 		var stats_required = []Stats_Tracker{}
@@ -236,11 +238,13 @@ func Run_Calculation(Feats []map[string]string, data RequestData, allAllocatedFe
 				}
 			}
 			if !UTTERFAILURE {
-				if data.Character_Type != "" && Feat["Type"] != "" {
-					var matches bool = Check_For_Type(Feat["Type"], data.Character_Type)
-					if matches {
-						fmt.Println(Feat["Feat"], " ", "Checked for no failures on STAT+SKILL")
-						*allAllocatedFeats = append(*allAllocatedFeats, Feat["Feat"])
+				if len(data.Character_Type) > 0 && Feat["Type"] != "" {
+					for i := 0; i < len(data.Character_Type); i++ {
+						var matches bool = Check_For_Type(Feat["Type"], data.Character_Type[i])
+						if matches {
+							fmt.Println(Feat["Feat"], " ", "Checked for no failures on STAT+SKILL")
+							*allAllocatedFeats = append(*allAllocatedFeats, Feat["Feat"])
+						}
 					}
 				} else {
 					fmt.Println(Feat["Feat"], " ", "Checked for no failures on STAT+SKILL")
@@ -284,11 +288,14 @@ func Run_Calculation(Feats []map[string]string, data RequestData, allAllocatedFe
 			}
 
 			if !UTTERFAILURE {
-				if data.Character_Type != "" && Feat["Type"] != "" {
-					var matches bool = Check_For_Type(Feat["Type"], data.Character_Type)
-					if matches {
-						fmt.Println(Feat["Feat"], " ", "Checked for no failures on STAT")
-						*allAllocatedFeats = append(*allAllocatedFeats, Feat["Feat"])
+
+				if len(data.Character_Type) > 0 && Feat["Type"] != "" {
+					for i := 0; i < len(data.Character_Type); i++ {
+						var matches bool = Check_For_Type(Feat["Type"], data.Character_Type[i])
+						if matches {
+							fmt.Println(Feat["Feat"], " ", "Checked for no failures on STAT")
+							*allAllocatedFeats = append(*allAllocatedFeats, Feat["Feat"])
+						}
 					}
 				} else {
 					fmt.Println(Feat["Feat"], " ", "Checked for no failures on STAT")
@@ -358,11 +365,13 @@ func Run_Calculation(Feats []map[string]string, data RequestData, allAllocatedFe
 			}
 
 			if !UTTERFAILURE {
-				if data.Character_Type != "" && Feat["Type"] != "" {
-					var matches bool = Check_For_Type(Feat["Type"], data.Character_Type)
-					if matches {
-						fmt.Println(Feat["Feat"], " ", "Checked for no failures on SKILL")
-						*allAllocatedFeats = append(*allAllocatedFeats, Feat["Feat"])
+				if len(data.Character_Type) > 0 && Feat["Type"] != "" {
+					for i := 0; i < len(data.Character_Type); i++ {
+						var matches bool = Check_For_Type(Feat["Type"], data.Character_Type[i])
+						if matches {
+							fmt.Println(Feat["Feat"], " ", "Checked for no failures on SKILL")
+							*allAllocatedFeats = append(*allAllocatedFeats, Feat["Feat"])
+						}
 					}
 				} else {
 					fmt.Println(Feat["Feat"], " ", "Checked for no failures on SKILL")
