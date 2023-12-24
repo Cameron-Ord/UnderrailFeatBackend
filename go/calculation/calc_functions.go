@@ -242,8 +242,9 @@ func Run_Calculation(Feats []map[string]string, data RequestData, allAllocatedFe
 				if len(data.Character_Type) > 0 && Feat["Type"] != "" {
 					for i := 0; i < len(data.Character_Type); i++ {
 						var matches bool = Check_For_Type(Feat["Type"], data.Character_Type[i])
-						matched_slice = append(matched_slice, matches)
-	
+						if matches {
+							matched_slice = append(matched_slice, matches)
+						}
 					}
 					if len(matched_slice) > 0 {
 						fmt.Println(Feat["Feat"], " ", "Checked for no failures on STAT+SKILL")
@@ -295,7 +296,9 @@ func Run_Calculation(Feats []map[string]string, data RequestData, allAllocatedFe
 				if len(data.Character_Type) > 0 && Feat["Type"] != "" {
 					for i := 0; i < len(data.Character_Type); i++ {
 						var matches bool = Check_For_Type(Feat["Type"], data.Character_Type[i])
-						matched_slice = append(matched_slice, matches)
+						if matches {
+							matched_slice = append(matched_slice, matches)
+						}
 					}
 
 					if len(matched_slice) > 0 {
@@ -374,9 +377,10 @@ func Run_Calculation(Feats []map[string]string, data RequestData, allAllocatedFe
 				if len(data.Character_Type) > 0 && Feat["Type"] != "" {
 					for i := 0; i < len(data.Character_Type); i++ {
 						var matches bool = Check_For_Type(Feat["Type"], data.Character_Type[i])
-						matched_slice = append(matched_slice, matches)
+						if matches {
+							matched_slice = append(matched_slice, matches)
+						}
 					}
-
 					if len(matched_slice) > 0 {
 						fmt.Println(Feat["Feat"], " ", "Checked for no failures on SKILL")
 						*allAllocatedFeats = append(*allAllocatedFeats, Feat["Feat"])
