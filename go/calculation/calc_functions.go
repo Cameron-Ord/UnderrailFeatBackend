@@ -238,13 +238,16 @@ func Run_Calculation(Feats []map[string]string, data RequestData, allAllocatedFe
 				}
 			}
 			if !UTTERFAILURE {
+				var matched_slice []bool
 				if len(data.Character_Type) > 0 && Feat["Type"] != "" {
 					for i := 0; i < len(data.Character_Type); i++ {
 						var matches bool = Check_For_Type(Feat["Type"], data.Character_Type[i])
-						if matches {
-							fmt.Println(Feat["Feat"], " ", "Checked for no failures on STAT+SKILL")
-							*allAllocatedFeats = append(*allAllocatedFeats, Feat["Feat"])
-						}
+						matched_slice = append(matched_slice, matches)
+	
+					}
+					if len(matched_slice) > 0 {
+						fmt.Println(Feat["Feat"], " ", "Checked for no failures on STAT+SKILL")
+						*allAllocatedFeats = append(*allAllocatedFeats, Feat["Feat"])
 					}
 				} else {
 					fmt.Println(Feat["Feat"], " ", "Checked for no failures on STAT+SKILL")
@@ -288,14 +291,16 @@ func Run_Calculation(Feats []map[string]string, data RequestData, allAllocatedFe
 			}
 
 			if !UTTERFAILURE {
-
+				var matched_slice []bool
 				if len(data.Character_Type) > 0 && Feat["Type"] != "" {
 					for i := 0; i < len(data.Character_Type); i++ {
 						var matches bool = Check_For_Type(Feat["Type"], data.Character_Type[i])
-						if matches {
-							fmt.Println(Feat["Feat"], " ", "Checked for no failures on STAT")
-							*allAllocatedFeats = append(*allAllocatedFeats, Feat["Feat"])
-						}
+						matched_slice = append(matched_slice, matches)
+					}
+
+					if len(matched_slice) > 0 {
+						fmt.Println(Feat["Feat"], " ", "Checked for no failures on STAT")
+						*allAllocatedFeats = append(*allAllocatedFeats, Feat["Feat"])
 					}
 				} else {
 					fmt.Println(Feat["Feat"], " ", "Checked for no failures on STAT")
@@ -365,13 +370,16 @@ func Run_Calculation(Feats []map[string]string, data RequestData, allAllocatedFe
 			}
 
 			if !UTTERFAILURE {
+				var matched_slice []bool
 				if len(data.Character_Type) > 0 && Feat["Type"] != "" {
 					for i := 0; i < len(data.Character_Type); i++ {
 						var matches bool = Check_For_Type(Feat["Type"], data.Character_Type[i])
-						if matches {
-							fmt.Println(Feat["Feat"], " ", "Checked for no failures on SKILL")
-							*allAllocatedFeats = append(*allAllocatedFeats, Feat["Feat"])
-						}
+						matched_slice = append(matched_slice, matches)
+					}
+
+					if len(matched_slice) > 0 {
+						fmt.Println(Feat["Feat"], " ", "Checked for no failures on SKILL")
+						*allAllocatedFeats = append(*allAllocatedFeats, Feat["Feat"])
 					}
 				} else {
 					fmt.Println(Feat["Feat"], " ", "Checked for no failures on SKILL")
