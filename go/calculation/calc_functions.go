@@ -195,20 +195,6 @@ func Run_Calculation(Feats []map[string]string, data RequestData, allAllocatedFe
 				skills_are_failed = true
 			}
 
-			/*
-				doing this because technically the skill_is_required == "false" isn't infallible.
-				If I don't do this check, if the hardrequirement is within the skills_failed and all skills aren't (technically) required, it will bypass the check coming up
-			*/
-			if hard_req, ok := Feat["HardRequirement"]; ok && skills_are_failed {
-				for g := 0; g < len(skills_failed); g++ {
-					skill := skills_failed[g]
-					if skill == hard_req {
-						fmt.Println("Failed(stat+skill): ", Feat["Feat"], "-> REASON: (Skill had hard requirement: ", hard_req, ")")
-						UTTERFAILURE = true
-					}
-				}
-			}
-
 			if skills_are_failed {
 				for h := 0; h < len(skills_failed); h++ {
 					var is_ok bool = false
@@ -327,20 +313,6 @@ func Run_Calculation(Feats []map[string]string, data RequestData, allAllocatedFe
 			var skills_are_failed bool = false
 			if len(skills_failed) > 0 {
 				skills_are_failed = true
-			}
-
-			/*
-				doing this because technically the skill_is_required == "false" isn't infallible.
-				If I don't do this check, if the hardrequirement is within the skills_failed and all skills aren't (technically) required, it will bypass the check coming up
-			*/
-			if hard_req, ok := Feat["HardRequirement"]; ok && skills_are_failed {
-				for g := 0; g < len(skills_failed); g++ {
-					skill := skills_failed[g]
-					if skill == hard_req {
-						fmt.Println("Failed(skill): ", Feat["Feat"], "-> REASON: (Skill had hard requirement: ", hard_req, ")")
-						UTTERFAILURE = true
-					}
-				}
 			}
 
 			if skills_are_failed {
