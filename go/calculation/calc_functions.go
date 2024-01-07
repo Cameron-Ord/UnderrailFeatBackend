@@ -169,7 +169,7 @@ func Run_Calculation(Feats []map[string]string, data RequestData, allAllocatedFe
 				stats_are_failed = true
 			}
 
-			if stats_are_failed {
+			if stats_are_failed && !UTTERFAILURE {
 				var required []string
 				for l := 0; l < len(stats_failed); l++ {
 					if hard_req, ok := Feat["NeedsAllStats"]; ok {
@@ -195,7 +195,7 @@ func Run_Calculation(Feats []map[string]string, data RequestData, allAllocatedFe
 				skills_are_failed = true
 			}
 
-			if skills_are_failed {
+			if skills_are_failed && !UTTERFAILURE {
 				for h := 0; h < len(skills_failed); h++ {
 					var is_ok bool = false
 					var skill_is_required string
@@ -261,7 +261,7 @@ func Run_Calculation(Feats []map[string]string, data RequestData, allAllocatedFe
 				stats_are_failed = true
 			}
 
-			if stats_are_failed {
+			if stats_are_failed && !UTTERFAILURE{
 				var required []string
 				for l := 0; l < len(stats_failed); l++ {
 					if hard_req, ok := Feat["NeedsAllStats"]; ok {
@@ -315,7 +315,7 @@ func Run_Calculation(Feats []map[string]string, data RequestData, allAllocatedFe
 				skills_are_failed = true
 			}
 
-			if skills_are_failed {
+			if skills_are_failed && !UTTERFAILURE{
 				for h := 0; h < len(skills_failed); h++ {
 					var is_ok bool = false
 					var skill_is_required string
