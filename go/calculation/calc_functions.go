@@ -15,7 +15,7 @@ func Check_For_Type(Feat_Type string, type_substr string) bool {
 	return contains_substr
 }
 
-func Marshal_Data(sentSlice []string) ([]byte, error) {
+func Marshal_Data(sentSlice []FeatData) ([]byte, error) {
 	//assigning jsondata from the sentslice(the amalgamation of the results from all the checks)
 	jsonData, err := json.Marshal(sentSlice)
 	if err != nil {
@@ -132,7 +132,7 @@ func Check_Skills(skills_required []Skills_Tracker, skills_met *[]string, skills
 	return nil
 }
 
-func Run_Calculation(Feats []map[string]string, data RequestData, allAllocatedFeats *[]string) error {
+func Run_Calculation(Feats []map[string]string, data RequestData, allAllocatedFeats *[]FeatData) error {
 
 	for i := 0; i < len(Feats); i++ {
 		fmt.Println("Beginning checks on: ", Feats[i]["Feat"], "...")
@@ -234,11 +234,13 @@ func Run_Calculation(Feats []map[string]string, data RequestData, allAllocatedFe
 					}
 					if len(matched_slice) > 0 {
 						fmt.Println(Feat["Feat"], " ", "Checked for no failures on STAT+SKILL")
-						*allAllocatedFeats = append(*allAllocatedFeats, Feat["Feat"])
+						feat := FeatData{Feat: Feat["Feat"], Desc: ""}
+						*allAllocatedFeats = append(*allAllocatedFeats, feat)
 					}
 				} else {
 					fmt.Println(Feat["Feat"], " ", "Checked for no failures on STAT+SKILL")
-					*allAllocatedFeats = append(*allAllocatedFeats, Feat["Feat"])
+					feat := FeatData{Feat: Feat["Feat"], Desc: ""}
+					*allAllocatedFeats = append(*allAllocatedFeats, feat)
 				}
 			}
 
@@ -261,7 +263,7 @@ func Run_Calculation(Feats []map[string]string, data RequestData, allAllocatedFe
 				stats_are_failed = true
 			}
 
-			if stats_are_failed && !UTTERFAILURE{
+			if stats_are_failed && !UTTERFAILURE {
 				var required []string
 				for l := 0; l < len(stats_failed); l++ {
 					if hard_req, ok := Feat["NeedsAllStats"]; ok {
@@ -289,11 +291,13 @@ func Run_Calculation(Feats []map[string]string, data RequestData, allAllocatedFe
 
 					if len(matched_slice) > 0 {
 						fmt.Println(Feat["Feat"], " ", "Checked for no failures on STAT")
-						*allAllocatedFeats = append(*allAllocatedFeats, Feat["Feat"])
+						feat := FeatData{Feat: Feat["Feat"], Desc: ""}
+						*allAllocatedFeats = append(*allAllocatedFeats, feat)
 					}
 				} else {
 					fmt.Println(Feat["Feat"], " ", "Checked for no failures on STAT")
-					*allAllocatedFeats = append(*allAllocatedFeats, Feat["Feat"])
+					feat := FeatData{Feat: Feat["Feat"], Desc: ""}
+					*allAllocatedFeats = append(*allAllocatedFeats, feat)
 				}
 			}
 
@@ -315,7 +319,7 @@ func Run_Calculation(Feats []map[string]string, data RequestData, allAllocatedFe
 				skills_are_failed = true
 			}
 
-			if skills_are_failed && !UTTERFAILURE{
+			if skills_are_failed && !UTTERFAILURE {
 				for h := 0; h < len(skills_failed); h++ {
 					var is_ok bool = false
 					var skill_is_required string
@@ -355,11 +359,13 @@ func Run_Calculation(Feats []map[string]string, data RequestData, allAllocatedFe
 					}
 					if len(matched_slice) > 0 {
 						fmt.Println(Feat["Feat"], " ", "Checked for no failures on SKILL")
-						*allAllocatedFeats = append(*allAllocatedFeats, Feat["Feat"])
+						feat := FeatData{Feat: Feat["Feat"], Desc: ""}
+						*allAllocatedFeats = append(*allAllocatedFeats, feat)
 					}
 				} else {
 					fmt.Println(Feat["Feat"], " ", "Checked for no failures on SKILL")
-					*allAllocatedFeats = append(*allAllocatedFeats, Feat["Feat"])
+					feat := FeatData{Feat: Feat["Feat"], Desc: ""}
+					*allAllocatedFeats = append(*allAllocatedFeats, feat)
 				}
 			}
 		}

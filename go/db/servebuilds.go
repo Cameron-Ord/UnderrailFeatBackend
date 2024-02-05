@@ -28,8 +28,11 @@ func ServeBuilds() ([]byte, error) {
 	var Returned_Id_Slice []Build_ID_Titles
 	Returned_Id_Slice, err = getBuildIds(dbConn)
 	if err != nil {
+		fmt.Println("Failed at getBuildIds")
 		return nil, err
 	}
+
+	fmt.Println(DBUsername)
 	type MiddleMan struct {
 		Skill_Slice []Skill_Info
 		Stat_Slice  []Stat_Info
@@ -74,10 +77,10 @@ func getBuildIds(db *sql.DB) ([]Build_ID_Titles, error) {
 	var query string
 	builds := []Build_ID_Titles{}
 	buildsPtr := &builds
-
 	query = "CALL select_newest_build_ids()"
 	rows, err := db.Query(query)
 	if err != nil {
+		fmt.Println("Failed at query")
 		return nil, err
 	}
 	defer rows.Close()
@@ -86,6 +89,7 @@ func getBuildIds(db *sql.DB) ([]Build_ID_Titles, error) {
 		var title_holder string
 		err := rows.Scan(&id_holder, &title_holder)
 		if err != nil {
+			fmt.Println("Failed at scan")
 			return nil, err
 		}
 
@@ -99,6 +103,7 @@ func getBuildIds(db *sql.DB) ([]Build_ID_Titles, error) {
 	}
 	err = rows.Err()
 	if err != nil {
+		fmt.Println("Rows err")
 		return nil, err
 	}
 

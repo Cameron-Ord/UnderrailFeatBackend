@@ -1,7 +1,7 @@
 package calculation
 
 func Prepare_Data(data RequestData) ([]byte, error) {
-	var allAllocatedFeats []string
+	var allAllocatedFeats []FeatData
 	var Feats []map[string]string
 	var err error
 	Feats = Unload_Json()

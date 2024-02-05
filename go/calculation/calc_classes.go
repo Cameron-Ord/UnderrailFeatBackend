@@ -27,3 +27,8 @@ type Stats_Tracker struct {
 	Stat_Value int
 	Feat_Value string
 }
+
+type FeatData struct {
+	Feat string
+	Desc string
+}
