@@ -35,9 +35,9 @@ func ConnectForSignup(signupQuery SignupData) error {
 }
 
 func hashPassword(signupQuery *SignupData) error {
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(signupQuery.Password), bcrypt.DefaultCost)
+  hashedPassword, err := bcrypt.GenerateFromPassword([]byte(signupQuery.Password), bcrypt.DefaultCost)
 	if err != nil {
-		return err
+    return err
 	}
 	signupQuery.Password = string(hashedPassword)
 	return nil
