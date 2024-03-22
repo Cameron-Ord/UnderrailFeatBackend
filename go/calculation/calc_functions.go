@@ -95,23 +95,6 @@ func Get_Requirements(Feat map[string]string, data RequestData, stats_req *[]Sta
 	fmt.Println("Requirements retrieved..")
 }
 
-func Check_All(stats_required []Stats_Tracker, skills_required []Skills_Tracker, stats_met *[]string, stats_failed *[]string, skills_met *[]string, skills_failed *[]string) error {
-	for r := 0; r < len(stats_required); r++ {
-		err := Perform_Check(stats_met, stats_failed, stats_required[r].Feat_Value, stats_required[r].Stat_Name, stats_required[r].Stat_Value)
-		if err != nil {
-			return err
-		}
-	}
-	for k := 0; k < len(skills_required); k++ {
-		err := Perform_Check(skills_met, skills_failed, skills_required[k].Feat_Value, skills_required[k].Skill_Name, skills_required[k].Skill_Value)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
 func Check_Stats(stats_required []Stats_Tracker, stats_met *[]string, stats_failed *[]string) error {
 	for r := 0; r < len(stats_required); r++ {
 		err := Perform_Check(stats_met, stats_failed, stats_required[r].Feat_Value, stats_required[r].Stat_Name, stats_required[r].Stat_Value)
@@ -150,16 +133,14 @@ func Run_Calculation(Feats []map[string]string, data RequestData, allAllocatedFe
 			var skills_failed = []string{}
 			//failure tracking, if this is true even once it's failure
 			var UTTERFAILURE bool = false
-
-			err := Check_All(
-				stats_required, skills_required, &stats_met,
-				&stats_failed, &skills_met, &skills_failed,
-			)
+			err := Check_Skills(skills_required, &skills_met, &skills_failed)
 			if err != nil {
-				fmt.Println("Errored: ", err)
 				return err
 			}
-
+			err = Check_Stats(stats_required, &stats_met, &stats_failed)
+			if err != nil {
+				return err
+			}
 			if len(stats_met) == 0 {
 				fmt.Println("Failed(stat+skill): ", Feat["Feat"], "-> REASON: (No stats met)")
 				UTTERFAILURE = true
@@ -251,7 +232,6 @@ func Run_Calculation(Feats []map[string]string, data RequestData, allAllocatedFe
 
 			err := Check_Stats(stats_required, &stats_met, &stats_failed)
 			if err != nil {
-				fmt.Println("Errored: ", err)
 				return err
 			}
 			if len(stats_met) == 0 {
