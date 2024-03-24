@@ -32,7 +32,6 @@ func ServeBuilds() ([]byte, error) {
 		return nil, err
 	}
 
-	fmt.Println(DBUsername)
 	type MiddleMan struct {
 		Skill_Slice []Skill_Info
 		Stat_Slice  []Stat_Info

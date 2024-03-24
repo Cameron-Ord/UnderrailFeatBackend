@@ -71,3 +71,10 @@ type SaveData struct {
 	Client_ID     uint    `json:"client_id"`
 	Session_Token string  `json:"session_token"`
 }
+
+// DELETE
+
+type DeleteData struct {
+	Client_ID uint `json:"client_id"`
+	Build_ID  uint `json:"build_id"`
+}

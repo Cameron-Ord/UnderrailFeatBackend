@@ -92,7 +92,6 @@ func getUserBuildIds(db *sql.DB, user_session_data User_Session_Data) ([]Build_I
 			Title:    title_holder,
 		}
 		user_builds = append(user_builds, currentBuild)
-		fmt.Printf("Build ID: %d, Build Title: %s\n", currentBuild.Build_ID, currentBuild.Title)
 	}
 	err = rows.Err()
 	if err != nil {

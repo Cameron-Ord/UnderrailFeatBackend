@@ -44,6 +44,39 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	endpoint := vars["endpoint"]
 	switch endpoint {
 
+	case "delete-user-build":
+		w.Header().Set("Access-Control-Allow-Origin", url)
+		w.Header().Set("Access-Control-Allow-Methods", "DELETE")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		body, err := io.ReadAll(r.Body)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		var delete_data db.DeleteData
+		if err := json.Unmarshal(body, &delete_data); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		err = db.DestroyBuild(delete_data)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		result := "Build deleted successfully"
+		resultjson, err := json.Marshal(result)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write(resultjson)
+
 	case "get-profile-info":
 		w.Header().Set("Access-Control-Allow-Origin", url)
 		w.Header().Set("Access-Control-Allow-Methods", "GET")
@@ -56,7 +89,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		}
 		uintVal, err := strconv.ParseUint(client_id, 10, 64)
 		if err != nil {
-			http.Error(w, "Error converting string values", http.StatusInternalServerError)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 		client_id_uint := uint(uintVal)
@@ -66,7 +99,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		}
 		jsonified_data, err := db.GetProfileInfo(user_session_data)
 		if err != nil {
-			http.Error(w, "Error getting profile info", http.StatusInternalServerError)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 		w.Header().Set("Content-Type", "application/json")
@@ -79,12 +112,12 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		_, err := io.ReadAll(r.Body)
 		if err != nil {
-			http.Error(w, "Error reading request", http.StatusBadRequest)
+			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 		jsonified_data, err := db.ServeBuilds()
 		if err != nil {
-			http.Error(w, "Error during DB transaction", http.StatusInternalServerError)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 		w.Header().Set("Content-Type", "application/json")
@@ -106,7 +139,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		//base 10, 64 bit
 		uintVal, err := strconv.ParseUint(client_id, 10, 64)
 		if err != nil {
-			http.Error(w, "Error converting string values", http.StatusBadRequest)
+			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 
@@ -118,7 +151,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 		jsonified_data, err := db.GetUserBuilds(user_session_data)
 		if err != nil {
-			http.Error(w, "Error retrieving database data", http.StatusBadRequest)
+			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 		w.Header().Set("Content-Type", "application/json")
@@ -132,23 +165,23 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
-			http.Error(w, "Error reading request", http.StatusBadRequest)
+			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 		var saveData db.SaveData
 		if err := json.Unmarshal(body, &saveData); err != nil {
-			http.Error(w, "Error decoding JSON data", http.StatusInternalServerError)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 		err = db.SaveBuild(saveData)
 		if err != nil {
-			http.Error(w, "Error during DB transaction", http.StatusBadRequest)
+			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 		result := "Build saved successfully"
 		resultjson, err := json.Marshal(result)
 		if err != nil {
-			http.Error(w, "Error marshalling JSON", http.StatusInternalServerError)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 		w.Header().Set("Content-Type", "application/json")
@@ -163,19 +196,19 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
-			http.Error(w, "Error reading request", http.StatusBadRequest)
+			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 
 		var signupQuery db.SignupData
 		if err := json.Unmarshal(body, &signupQuery); err != nil {
-			http.Error(w, "Error decoding JSON data", http.StatusInternalServerError)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
 		err = db.ConnectForSignup(signupQuery)
 		if err != nil {
-			http.Error(w, "Error during signup", http.StatusBadRequest)
+			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 
@@ -183,7 +216,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		signupResult, err := json.Marshal(result)
 
 		if err != nil {
-			http.Error(w, "Error during json marshalling", http.StatusInternalServerError)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 		w.Header().Set("Content-Type", "application/json")
@@ -197,19 +230,19 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
-			http.Error(w, "Error reading request", http.StatusBadRequest)
+			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 
 		var loginQuery db.LoginData
 		if err := json.Unmarshal(body, &loginQuery); err != nil {
-			http.Error(w, "Error decoding JSON data", http.StatusInternalServerError)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
 		session_data, err := db.ConnectForLogin(loginQuery)
 		if err != nil {
-			http.Error(w, "Error during login", http.StatusInternalServerError)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 		w.Header().Set("Content-Type", "application/json")
@@ -224,20 +257,20 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		//reading all data sent from frontend
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
-			http.Error(w, "Error reading request", http.StatusBadRequest)
+			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 		//unmarshalling the json data to the structs in calculation.go
 		var data calculation.RequestData
 		if err := json.Unmarshal(body, &data); err != nil {
-			http.Error(w, "Error decoding JSON data", http.StatusBadRequest)
+			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 		//initializing the skill and stat checkers and assigning the returned result
 		returnedFeats, err := calculation.Prepare_Data(data)
 		//if the function returns an error, returns and writes a error
 		if err != nil {
-			http.Error(w, "Error during calculation", http.StatusInternalServerError)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 		//if there is no error, statusOKs and writes makes a response using the returnedFeats json
